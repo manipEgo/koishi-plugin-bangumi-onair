@@ -91,4 +91,4 @@ const getTodayBangumiData = (timeNow: moment.Moment): bangumiData.Item[] => {
     return todayBangumiData;
 }
 
-export { getTodayBangumiData }
+export { getSeasonBangumiData, getTodayBangumiData }
