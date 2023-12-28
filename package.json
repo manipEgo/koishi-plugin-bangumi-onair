@@ -9,7 +9,6 @@
     "dist"
   ],
   "license": "MIT",
-  "scripts": {},
   "keywords": [
     "chatbot",
     "koishi",
@@ -17,5 +16,9 @@
   ],
   "peerDependencies": {
     "koishi": "^4.16.2"
+  },
+  "dependencies": {
+    "bangumi-data": "^0.3.127",
+    "moment": "^2.30.1"
   }
 }
