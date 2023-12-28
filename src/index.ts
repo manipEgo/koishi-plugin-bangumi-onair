@@ -13,7 +13,7 @@ export const Config: Schema<Config> = Schema.object({})
 
 export function apply(ctx: Context) {
   // bangumi onair today
-  ctx.command('tv').action((_) => {
+  ctx.command('day').action((_) => {
     const bangumi = getTodayBangumiData(moment());
     bangumi.sort((a, b) => {
       return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
