@@ -23,21 +23,24 @@ export function apply(ctx: Context, config: Config) {
   // bangumi onair today
   ctx.command('onair/day').action((_) => {
     const bangumi = getTodayBangumiData(moment(), config);
+    // sort by begin time
     bangumi.sort((a, b) => {
       return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
     });
+    // convert to list of string to display
     const bangumiStringList = bangumi.map((b) => {
+      const prefix = moment(b.begin).format("HH:mm") + "   ";
       // display Chinese title
       if (config.showChineseTitle) {
-        return moment(b.begin).format('HH:mm') + "   " +
+        return prefix +
           (b.titleTranslate['zh-Hans'] == undefined ?
             b.title : b.titleTranslate['zh-Hans'][0] ?? b.title)
       }
       else {
-        return moment(b.begin).format('HH:mm') + "   " + b.title
+        return prefix + b.title
       }
     });
-    // mark current time
+    // mark current time between bangumi
     let timePointer = 0;
     while (timePointer < bangumiStringList.length) {
       if (moment(bangumi[timePointer].begin).format('HH:mm') > moment().format('HH:mm')) {
@@ -53,24 +56,30 @@ export function apply(ctx: Context, config: Config) {
   // bangumi onair this season
   ctx.command('onair/season').action((_) => {
     const bangumi = getSeasonBangumiData(moment(), config);
+    // sort by isoWeekday -> begin time -> dayOfYear
     bangumi.sort((a, b) => {
       if (moment(a.begin).isoWeekday() === moment(b.begin).isoWeekday()) {
-        return moment(a.begin).dayOfYear() > moment(b.begin).dayOfYear() ? 1 : -1;
+        if (moment(a.begin).format('HH:mm') === moment(b.begin).format('HH:mm')) {
+          return moment(a.begin).dayOfYear() > moment(b.begin).dayOfYear() ? 1 : -1;
+        }
+        return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
       }
       return moment(a.begin).isoWeekday() > moment(b.begin).isoWeekday() ? 1 : -1;
     });
+    // convert to list of string to display
     const bangumiStringList = bangumi.map((b) => {
+      const prefix = moment(b.begin).format("HH:mm MM-DD") + "   ";
       // display Chinese title
       if (config.showChineseTitle) {
-        return moment(b.begin).format('MM-DD') + "   " +
+        return prefix +
           (b.titleTranslate['zh-Hans'] == undefined ?
             b.title : b.titleTranslate['zh-Hans'][0] ?? b.title)
       }
       else {
-        return moment(b.begin).format('MM-DD') + "   " + b.title
+        return prefix + b.title
       }
-  });
-    // mark weekdays
+    });
+    // mark weekdays between bangumi
     let weekdayPointer = [0, 0, 0, 0, 0, 0, 0, bangumiStringList.length];
     let weekday = 1;
     while (weekday < 7) {
