@@ -1,5 +1,6 @@
 import bangumiData from 'bangumi-data';
 import moment from 'moment';
+import { Config } from '..';
 
 /**
  * Get the season of the time
@@ -26,14 +27,17 @@ const getSeason = (timeNow: moment.Moment): moment.Moment => {
  * @param timeNow current time
  * @returns bangumi data of the season
  */
-const getSeasonBangumiData = (timeNow: moment.Moment): bangumiData.Item[] => {
+const getSeasonBangumiData = (timeNow: moment.Moment, config: Config): bangumiData.Item[] => {
     const season = getSeason(timeNow);
     const seasonBangumiData = bangumiData.items.filter((b) => {
         const begin = moment(b.begin);
         const end = moment(b.end);
+        if (config.excludeOld) {
+            return begin.isSameOrAfter(season);
+        }
         return (
-            (begin.isSameOrAfter(season) &&
-                end.isSameOrBefore(season.clone().add(3, "months"))) ||
+            begin.isSameOrAfter(season) ||
+            end.isSameOrAfter(season) ||
             b.end === "" ||
             b.end === undefined
         );
@@ -66,8 +70,8 @@ const checkPeriodHitDay = (timeNow: moment.Moment, begin: moment.Moment, period:
  * @param timeNow current time
  * @returns bangumi data of today
  */
-const getTodayBangumiData = (timeNow: moment.Moment): bangumiData.Item[] => {
-    const seasonBangumiData = getSeasonBangumiData(timeNow);
+const getTodayBangumiData = (timeNow: moment.Moment, config: Config): bangumiData.Item[] => {
+    const seasonBangumiData = getSeasonBangumiData(timeNow, config);
     const todayBangumiData = seasonBangumiData.filter((b) => {
         // check if the bangumi is already end
         if (b.end !== "" && b.end !== undefined) {
