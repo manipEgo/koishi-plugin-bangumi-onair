@@ -13,12 +13,16 @@ export const Config: Schema<Config> = Schema.object({})
 
 export function apply(ctx: Context) {
   // bangumi onair today
-  ctx.command('day').action((_) => {
+  ctx.command('onair/day').action((_) => {
     const bangumi = getTodayBangumiData(moment());
     bangumi.sort((a, b) => {
       return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
     });
-    const bangumiStringList = bangumi.map((b) => moment(b.begin).format('HH:mm') + "   " + b.title);
+    const bangumiStringList = bangumi.map(
+      (b) => moment(b.begin).format('HH:mm') + "   " +
+        (b.titleTranslate['zh-Hans'] == undefined ?
+          b.title : b.titleTranslate['zh-Hans'][0] ?? b.title)
+    );
     // mark current time
     let timePointer = 0;
     while (timePointer < bangumiStringList.length) {
@@ -33,7 +37,7 @@ export function apply(ctx: Context) {
   });
 
   // bangumi onair this season
-  ctx.command('season').action((_) => {
+  ctx.command('onair/season').action((_) => {
     const bangumi = getSeasonBangumiData(moment());
     bangumi.sort((a, b) => {
       if (moment(a.begin).isoWeekday() === moment(b.begin).isoWeekday()) {
@@ -41,7 +45,11 @@ export function apply(ctx: Context) {
       }
       return moment(a.begin).isoWeekday() > moment(b.begin).isoWeekday() ? 1 : -1;
     });
-    const bangumiStringList = bangumi.map((b) => moment(b.begin).format('MM-DD') + "   " + b.title);
+    const bangumiStringList = bangumi.map(
+      (b) => moment(b.begin).format('MM-DD') + "   " +
+        (b.titleTranslate['zh-Hans'] == undefined ?
+          b.title : b.titleTranslate['zh-Hans'][0] ?? b.title)
+    );
     // mark weekdays
     let weekdayPointer = [0, 0, 0, 0, 0, 0, 0, bangumiStringList.length];
     let weekday = 1;
