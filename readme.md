@@ -43,7 +43,7 @@ Display bangumi that is onair (today/this season) in text.
 <details>
 <summary>output(uncheck showChineseTitle) / 输出（不显示中文标题）:</summary>
 
-> --- Monday ---
+> --- Monday ---<br>
 > 01-08   名探偵コナン<br>
 > 03-28   パッコロリン<br>
 > 04-02   パズドラ<br>
