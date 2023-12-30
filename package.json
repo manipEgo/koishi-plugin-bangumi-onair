@@ -32,6 +32,9 @@
       "en": "Display bangumi that is onair (today/this season) in text",
       "zh": "以文本展示当前正在放送的番剧（今日/本季）"
     },
-    "locales": ["en", "zh"]
+    "locales": [
+      "en",
+      "zh"
+    ]
   }
 }
