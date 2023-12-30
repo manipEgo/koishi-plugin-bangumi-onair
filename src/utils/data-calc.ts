@@ -1,6 +1,7 @@
-import bangumiData from 'bangumi-data';
+import { Context } from 'koishi';
 import moment from 'moment';
 import { Config } from '..';
+
 
 /**
  * Get the season of the time
@@ -22,27 +23,33 @@ const getSeason = (timeNow: moment.Moment): moment.Moment => {
     return moment([year, 0]);
 }
 
+
 /**
  * Get the bangumi data of the season
  * @param timeNow current time
  * @returns bangumi data of the season
  */
-const getSeasonBangumiData = (timeNow: moment.Moment, config: Config): bangumiData.Item[] => {
+const getSeasonBangumiData = async (ctx: Context, config: Config): Promise<Item[]> => {
+    const timeNow = moment();
     const season = getSeason(timeNow);
-    const seasonBangumiData = bangumiData.items.filter((b) => {
-        const begin = moment(b.begin);
-        const end = moment(b.end);
-        if (config.excludeOld) {
-            return begin.isSameOrAfter(season);
-        }
-        return (
-            begin.isSameOrAfter(season) ||
-            end.isSameOrAfter(season) ||
-            b.end === "" ||
-            b.end === undefined
-        );
-    });
-    return seasonBangumiData;
+    // read from database
+    let bangumiData: Item[] = [];
+    if (config.excludeOld) {
+        bangumiData = await ctx.database.get('bangumi', {
+            begin: { $gte: season.format("YYYY-MM-DD") }
+        }) as Item[];
+    }
+    else {
+        bangumiData = await ctx.database.get('bangumi', {
+            $or: [
+                { begin: { $gte: season.format("YYYY-MM-DD") } },
+                { end: { $gte: season.format("YYYY-MM-DD") } },
+                { end: "" },
+                { end: undefined }
+            ]
+        }) as Item[];
+    }
+    return bangumiData;
 }
 
 
@@ -70,8 +77,10 @@ const checkPeriodHitDay = (timeNow: moment.Moment, begin: moment.Moment, period:
  * @param timeNow current time
  * @returns bangumi data of today
  */
-const getTodayBangumiData = (timeNow: moment.Moment, config: Config): bangumiData.Item[] => {
-    const seasonBangumiData = getSeasonBangumiData(timeNow, config);
+const getTodayBangumiData = async (ctx: Context, config: Config): Promise<Item[]> => {
+    // TODO: bangumi API method?
+    const timeNow = moment();
+    const seasonBangumiData = await getSeasonBangumiData(ctx, config);
     const todayBangumiData = seasonBangumiData.filter((b) => {
         // check if the bangumi is already end
         if (b.end !== "" && b.end !== undefined) {
@@ -94,5 +103,6 @@ const getTodayBangumiData = (timeNow: moment.Moment, config: Config): bangumiDat
     });
     return todayBangumiData;
 }
+
 
 export { getSeasonBangumiData, getTodayBangumiData }

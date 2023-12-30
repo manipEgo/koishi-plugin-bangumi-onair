@@ -206,11 +206,6 @@ type SiteList =
 declare type SiteMetaRecord = Record<SiteList, SiteMeta>;
 
 /**
- * 番组数据
- */
-declare type Items = Item[];
-
-/**
  * CDN 数据
  */
 declare type rawJson = {
@@ -221,5 +216,5 @@ declare type rawJson = {
     /**
      * 番组数据
      */
-    items: Items,
+    items: Item[],
 };

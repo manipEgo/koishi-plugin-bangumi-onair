@@ -23,7 +23,7 @@ export function apply(ctx: Context, config: Config) {
   // create bangumi table
   ctx.model.extend('bangumi', {
     id: 'unsigned',
-    title: 'string',
+    title: { type: 'string', unique: true },
     titleTranslate: 'json',
     type: 'string',
     lang: 'string',
@@ -38,8 +38,8 @@ export function apply(ctx: Context, config: Config) {
   });
 
   // bangumi onair today
-  ctx.command('onair/day').action((_) => {
-    const bangumi = getTodayBangumiData(moment(), config);
+  ctx.command('onair/day').action(async (_) => {
+    const bangumi = await getTodayBangumiData(ctx, config);
     // sort by begin time
     bangumi.sort((a, b) => {
       return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
@@ -71,8 +71,8 @@ export function apply(ctx: Context, config: Config) {
   });
 
   // bangumi onair this season
-  ctx.command('onair/season').action((_) => {
-    const bangumi = getSeasonBangumiData(moment(), config);
+  ctx.command('onair/season').action(async (_) => {
+    const bangumi = await getSeasonBangumiData(ctx, config);
     // sort by isoWeekday -> begin time -> dayOfYear
     bangumi.sort((a, b) => {
       if (moment(a.begin).isoWeekday() === moment(b.begin).isoWeekday()) {
