@@ -2,8 +2,8 @@ import { Context, Schema } from 'koishi'
 
 import moment from 'moment';
 
-// bangumi-calc
 import { getSeasonBangumiData, getTodayBangumiData } from './utils/data-calc';
+import { getCDNData } from './utils/data-manip';
 
 export const name = 'bangumi-onair'
 
@@ -20,6 +20,23 @@ export const Config: Schema<Config> = Schema.object({
 })
 
 export function apply(ctx: Context, config: Config) {
+  // create bangumi table
+  ctx.model.extend('bangumi', {
+    id: 'unsigned',
+    title: 'string',
+    titleTranslate: 'json',
+    type: 'string',
+    lang: 'string',
+    officialSite: 'string',
+    begin: 'string',
+    broadcast: 'string',
+    end: 'string',
+    comment: 'string',
+    sites: 'json',
+  }, {
+    primary: 'id',
+  });
+
   // bangumi onair today
   ctx.command('onair/day').action((_) => {
     const bangumi = getTodayBangumiData(moment(), config);
@@ -97,5 +114,15 @@ export function apply(ctx: Context, config: Config) {
       bangumiString += bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n';
     }
     return bangumiString;
+  });
+
+  ctx.command('onair/update').action(async ({ session }) => {
+    // get bangumi data from CDN
+    session.send(`Updating bangumi data...`);
+    const bangumiData = await getCDNData();
+    // save bangumi items to database
+    await ctx.database.upsert('bangumi', bangumiData.items, 'id');
+    // TODO: localization
+    session.send(`Bangumi data updated!`);
   });
 }
