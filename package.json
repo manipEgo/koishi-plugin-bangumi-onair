@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bangumi-onair",
   "description": "Display bangumi that is onair in text",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -9,10 +9,16 @@
     "dist"
   ],
   "license": "MIT",
+  "homepage": "https://github.com/manipEgo/koishi-plugin-bangumi-onair",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manipEgo/koishi-plugin-bangumi-onair.git"
+  },
   "keywords": [
     "chatbot",
     "koishi",
-    "plugin"
+    "plugin",
+    "bangumi"
   ],
   "peerDependencies": {
     "koishi": "^4.16.2"
@@ -20,5 +26,12 @@
   "dependencies": {
     "bangumi-data": "^0.3.127",
     "moment": "^2.30.1"
+  },
+  "koishi": {
+    "description": {
+      "en": "Display bangumi that is onair (today/this season) in text",
+      "zh": "以文本展示当前正在放送的番剧（今日/本季）"
+    },
+    "locales": ["en", "zh"]
   }
 }
