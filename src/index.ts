@@ -20,25 +20,18 @@ export const Config: Schema<Config> = Schema.object({
 })
 
 export function apply(ctx: Context, config: Config) {
-  // create bangumi table
-  ctx.model.extend('bangumi', {
-    id: 'unsigned',
-    title: { type: 'string', unique: true },
-    titleTranslate: 'json',
-    type: 'string',
-    lang: 'string',
-    officialSite: 'string',
-    begin: 'string',
-    broadcast: 'string',
-    end: 'string',
-    comment: 'string',
-    sites: 'json',
-  }, {
-    primary: 'id',
-  });
-
   // bangumi onair today
-  ctx.command('onair/day').action(async (_) => {
+  ctx.command('onair/day')
+  .alias('onair-day')
+  .action(async ({ session }) => {
+    // check if database exists
+    try {
+      await ctx.database.get('bangumi', {});
+    }
+    catch (error) {
+      await session.execute('onair-update');
+    }
+
     const bangumi = await getTodayBangumiData(ctx, config);
     // sort by begin time
     bangumi.sort((a, b) => {
@@ -57,6 +50,7 @@ export function apply(ctx: Context, config: Config) {
         return prefix + b.title
       }
     });
+
     // mark current time between bangumi
     let timePointer = 0;
     while (timePointer < bangumiStringList.length) {
@@ -71,7 +65,17 @@ export function apply(ctx: Context, config: Config) {
   });
 
   // bangumi onair this season
-  ctx.command('onair/season').action(async (_) => {
+  ctx.command('onair/season')
+  .alias('onair-season')
+  .action(async ({ session }) => {
+    // check if database exists
+    try {
+      await ctx.database.get('bangumi', {});
+    }
+    catch (error) {
+      await session.execute('onair-update');
+    }
+
     const bangumi = await getSeasonBangumiData(ctx, config);
     // sort by isoWeekday -> begin time -> dayOfYear
     bangumi.sort((a, b) => {
@@ -96,6 +100,7 @@ export function apply(ctx: Context, config: Config) {
         return prefix + b.title
       }
     });
+
     // mark weekdays between bangumi
     let weekdayPointer = [0, 0, 0, 0, 0, 0, 0, bangumiStringList.length];
     let weekday = 1;
@@ -116,13 +121,63 @@ export function apply(ctx: Context, config: Config) {
     return bangumiString;
   });
 
-  ctx.command('onair/update').action(async ({ session }) => {
+  // update bangumi database
+  ctx.command('onair/update')
+  .alias('onair-update')
+  .action(async ({ session }) => {
+    await session.execute('onair-drop');
+    ctx.database.extend('bangumi', {
+      id: 'unsigned',
+      title: 'string',
+      titleTranslate: 'json',
+      type: 'string',
+      lang: 'string',
+      officialSite: 'string',
+      begin: 'string',
+      broadcast: 'string',
+      end: 'string',
+      comment: 'string',
+      sites: 'json',
+    }, {
+      primary: 'id'
+    });
     // get bangumi data from CDN
-    session.send(`Updating bangumi data...`);
-    const bangumiData = await getCDNData();
+    session.sendQueued(`Updating bangumi data...`);
+    const bangumiData = await getCDNData(session);
+    // sort by begin time -> title
+    bangumiData.items.sort((a, b) => {
+      if (a.begin === b.begin) {
+        return a.title > b.title ? 1 : -1;
+      }
+      return a.begin > b.begin ? 1 : -1;
+    });
+    // insert id
+    let id = 0;
+    let bangumiWithId = [];
+    for (const bangumi of bangumiData.items) {
+      bangumiWithId.push({
+        id: id++,
+        ...bangumi
+      });
+    }
     // save bangumi items to database
-    await ctx.database.upsert('bangumi', bangumiData.items, 'id');
+    await ctx.database.upsert('bangumi', bangumiData.items);
     // TODO: localization
-    session.send(`Bangumi data updated!`);
+    session.sendQueued(`Bangumi data updated.`);
+  });
+
+  // clear bangumi database
+  ctx.command('onair/drop')
+  .alias('onair-drop')
+  .action(async ({ session }) => {
+    // clear bangumi database
+    try {
+      await ctx.database.drop('bangumi');
+    }
+    catch (error) {
+      session.sendQueued(`Drop failed.`);
+      return;
+    }
+    session.sendQueued(`Bangumi data dropped.`);
   });
 }
