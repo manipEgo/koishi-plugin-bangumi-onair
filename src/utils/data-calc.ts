@@ -58,7 +58,7 @@ const checkPeriodHitDay = (timeNow: moment.Moment, begin: moment.Moment, period:
         return timeNow.dayOfYear() === begin.dayOfYear();
     }
     const happen = begin.clone();
-    while (happen.dayOfYear() < timeNow.dayOfYear()) {
+    while (happen.dayOfYear() < timeNow.dayOfYear() && happen.dayOfYear() >= begin.dayOfYear()) {
         happen.add(period);
     }
     return timeNow.dayOfYear() === happen.dayOfYear();
