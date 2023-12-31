@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bangumi-onair",
   "description": "Display bangumi that is onair in text",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -24,7 +24,6 @@
     "koishi": "^4.16.2"
   },
   "dependencies": {
-    "bangumi-data": "^0.3.127",
     "moment": "^2.30.1"
   },
   "koishi": {

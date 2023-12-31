@@ -180,10 +180,15 @@ Display bangumi that is onair (today/this season) in text.
 </details>
 
 ## TODOs / 开发计划
- - [x] 功能：显示本季动画 -> `/season`
- - [x] 功能：显示今日动画 -> `/day`
+ - [x] 功能：显示本季动画 -> `.season`
+ - [x] 功能：显示今日动画 -> `.day`
  - [x] 设置：排除非本季度开播动画 -> `excludeOld`
  - [x] 设置：显示中文标题 -> `showChineseTitle`
+ - [x] 基础：使用数据库减少请求
+ - [x] 功能：更新动画数据 -> `.update`
+ - [x] 功能：清除动画数据 -> `.drop`
+ - [x] 语言：中文设置
+ - [x] 语言：中文提示
  - [ ] 设置：限宽
  - [ ] 设置：限长
  - [ ] 设置：今日动画隐藏开播时间
@@ -192,7 +197,6 @@ Display bangumi that is onair (today/this season) in text.
  - [ ] 功能：仅显示订阅
  - [ ] 功能：订阅开播提醒
  - [ ] 功能：参数覆写设置
- - [ ] 语言：中文设置
 
 ## Credits / 鸣谢
  - [Koishi](https://koishi.chat/)
