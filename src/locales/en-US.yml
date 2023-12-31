@@ -1,0 +1,15 @@
+commands:
+  onair.day:
+    description: "bangumi onair today"
+  onair.season:
+    description: "bangumi onair this season"
+  onair.update:
+    description: "update bangumi database"
+    messages:
+      updating: "updating bangumi database…"
+      updated: "bangumi database updated"
+  onair.drop:
+    description: "drop bangumi database"
+    messages:
+      failed: "drop failed"
+      dropped: "dropped"

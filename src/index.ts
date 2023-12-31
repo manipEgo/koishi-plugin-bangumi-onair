@@ -20,16 +20,19 @@ export const Config: Schema<Config> = Schema.object({
 })
 
 export function apply(ctx: Context, config: Config) {
+  // localization
+  ctx.i18n.define('en-US', require('./locales/en-US'))
+  ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
   // bangumi onair today
-  ctx.command('onair/day')
-  .alias('onair-day')
+  ctx.command('onair.day')
+  .alias('bd')
   .action(async ({ session }) => {
     // check if database exists
     try {
       await ctx.database.get('bangumi', {});
     }
     catch (error) {
-      await session.execute('onair-update');
+      await session.execute('onair.update');
     }
 
     const bangumi = await getTodayBangumiData(ctx, config);
@@ -65,15 +68,15 @@ export function apply(ctx: Context, config: Config) {
   });
 
   // bangumi onair this season
-  ctx.command('onair/season')
-  .alias('onair-season')
+  ctx.command('onair.season')
+  .alias('bs')
   .action(async ({ session }) => {
     // check if database exists
     try {
       await ctx.database.get('bangumi', {});
     }
     catch (error) {
-      await session.execute('onair-update');
+      await session.execute('onair.update');
     }
 
     const bangumi = await getSeasonBangumiData(ctx, config);
@@ -122,10 +125,10 @@ export function apply(ctx: Context, config: Config) {
   });
 
   // update bangumi database
-  ctx.command('onair/update')
-  .alias('onair-update')
+  ctx.command('onair.update')
+  .alias('bupdate')
   .action(async ({ session }) => {
-    await session.execute('onair-drop');
+    await session.execute('onair.drop');
     ctx.database.extend('bangumi', {
       id: 'unsigned',
       title: 'string',
@@ -142,7 +145,7 @@ export function apply(ctx: Context, config: Config) {
       primary: 'id'
     });
     // get bangumi data from CDN
-    session.sendQueued(`Updating bangumi data...`);
+    session.sendQueued(session.text('.updating'));
     const bangumiData = await getCDNData(session);
     // sort by begin time -> title
     bangumiData.items.sort((a, b) => {
@@ -163,21 +166,21 @@ export function apply(ctx: Context, config: Config) {
     // save bangumi items to database
     await ctx.database.upsert('bangumi', bangumiData.items);
     // TODO: localization
-    session.sendQueued(`Bangumi data updated.`);
+    session.sendQueued(session.text('.updated'));
   });
 
   // clear bangumi database
-  ctx.command('onair/drop')
-  .alias('onair-drop')
+  ctx.command('onair.drop')
+  .alias('bdrop')
   .action(async ({ session }) => {
     // clear bangumi database
     try {
       await ctx.database.drop('bangumi');
     }
     catch (error) {
-      session.sendQueued(`Drop failed.`);
+      session.sendQueued(session.text('.failed'));
       return;
     }
-    session.sendQueued(`Bangumi data dropped.`);
+    session.sendQueued(session.text('.dropped'));
   });
 }

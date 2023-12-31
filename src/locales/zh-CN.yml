@@ -1,0 +1,15 @@
+commands:
+  onair.day:
+    description: "查看今日动画"
+  onair.season:
+    description: "查看本季动画"
+  onair.update:
+    description: "更新动画数据库"
+    messages:
+      updating: "正在更新动画数据库……"
+      updated: "动画数据库已更新"
+  onair.drop:
+    description: "删除动画数据库"
+    messages:
+      failed: "删除失败"
+      dropped: "已删除"
