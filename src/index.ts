@@ -14,19 +14,15 @@ declare module 'koishi' {
 export interface Bangumi {
   id: number;
   title: string;
-  titleTranslate: {
-    [key: string]: string[];
-  };
-  type: string;
-  lang: string;
+  titleTranslate: Record<Language, string[]>;
+  type: ItemType;
+  lang: Language;
   officialSite: string;
   begin: string;
   broadcast: string;
   end: string;
   comment: string;
-  sites: {
-    [key: string]: string;
-  };
+  sites: Site[];
 }
 
 export const name = 'bangumi-onair'
