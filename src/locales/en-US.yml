@@ -15,3 +15,7 @@ commands:
     messages:
       failed: "drop failed"
       dropped: "dropped"
+
+_config:
+  excludeOld: exclude old bangumi
+  showChineseTitle: show Chinese title if available

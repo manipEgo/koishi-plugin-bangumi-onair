@@ -15,3 +15,7 @@ commands:
     messages:
       failed: "删除失败"
       dropped: "已删除"
+
+_config:
+  excludeOld: 排除旧番
+  showChineseTitle: 优先显示中文标题

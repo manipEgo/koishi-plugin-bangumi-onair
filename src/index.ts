@@ -14,9 +14,12 @@ export interface Config {
 
 export const Config: Schema<Config> = Schema.object({
   // exclude bangumi of seasons before this season
-  excludeOld: Schema.boolean().default(false).description('exclude bangumi of seasons before this season'),
+  excludeOld: Schema.boolean().default(false),
   // display Chinese title
-  showChineseTitle: Schema.boolean().default(true).description('display Chinese title'),
+  showChineseTitle: Schema.boolean().default(true),
+}).i18n({
+  'en-US': require('./locales/en-US')._config,
+  'zh-CN': require('./locales/zh-CN')._config,
 })
 
 export function apply(ctx: Context, config: Config) {
