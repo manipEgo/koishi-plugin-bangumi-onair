@@ -5,6 +5,30 @@ import moment from 'moment';
 import { getSeasonBangumiData, getTodayBangumiData } from './utils/data-calc';
 import { getCDNData } from './utils/data-manip';
 
+declare module 'koishi' {
+  interface Tables {
+    bangumi: Bangumi
+  }
+}
+
+export interface Bangumi {
+  id: number;
+  title: string;
+  titleTranslate: {
+    [key: string]: string[];
+  };
+  type: string;
+  lang: string;
+  officialSite: string;
+  begin: string;
+  broadcast: string;
+  end: string;
+  comment: string;
+  sites: {
+    [key: string]: string;
+  };
+}
+
 export const name = 'bangumi-onair'
 
 export interface Config {
