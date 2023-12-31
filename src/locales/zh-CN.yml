@@ -1,4 +1,6 @@
 commands:
+  onair:
+    description: "动画放送信息"
   onair.day:
     description: "查看今日动画"
   onair.season:

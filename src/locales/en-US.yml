@@ -1,4 +1,6 @@
 commands:
+  onair:
+    description: "bangumi onair"
   onair.day:
     description: "bangumi onair today"
   onair.season:
