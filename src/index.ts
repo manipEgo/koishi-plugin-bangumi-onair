@@ -52,9 +52,9 @@ export function apply(ctx: Context, config: Config) {
   ctx.i18n.define('en-US', require('./locales/en-US'))
   ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
   // bangumi onair today
-  ctx.command('onair.day')
+  ctx.command('onair.day [offset:number]')
   .alias('bd')
-  .action(async ({ session }) => {
+  .action(async ({ session }, offset) => {
     // check if database exists
     try {
       await ctx.database.get('bangumi', {});
@@ -63,7 +63,8 @@ export function apply(ctx: Context, config: Config) {
       await session.execute('onair.update');
     }
 
-    const bangumi = await getTodayBangumiData(ctx, config);
+    // get bangumi data of today, plus offset
+    const bangumi = await getTodayBangumiData(moment().add(offset, 'days'), ctx, config);
     // sort by begin time
     bangumi.sort((a, b) => {
       return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
@@ -96,9 +97,9 @@ export function apply(ctx: Context, config: Config) {
   });
 
   // bangumi onair this season
-  ctx.command('onair.season')
+  ctx.command('onair.season [offset:number]')
   .alias('bs')
-  .action(async ({ session }) => {
+  .action(async ({ session }, offset) => {
     // check if database exists
     try {
       await ctx.database.get('bangumi', {});
@@ -107,7 +108,7 @@ export function apply(ctx: Context, config: Config) {
       await session.execute('onair.update');
     }
 
-    const bangumi = await getSeasonBangumiData(ctx, config);
+    const bangumi = await getSeasonBangumiData(moment().add(offset * 3, 'months'), ctx, config);
     // sort by isoWeekday -> begin time -> dayOfYear
     bangumi.sort((a, b) => {
       if (moment(a.begin).isoWeekday() === moment(b.begin).isoWeekday()) {

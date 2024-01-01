@@ -29,23 +29,33 @@ const getSeason = (timeNow: moment.Moment): moment.Moment => {
  * @param timeNow current time
  * @returns bangumi data of the season
  */
-const getSeasonBangumiData = async (ctx: Context, config: Config): Promise<Item[]> => {
-    const timeNow = moment();
+const getSeasonBangumiData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<Item[]> => {
     const season = getSeason(timeNow);
     // read from database
     let bangumiData: Item[] = [];
+    // exclude old bangumi
+    // begin time falls in the season
     if (config.excludeOld) {
         bangumiData = await ctx.database.get('bangumi', {
-            begin: { $gte: season.format("YYYY-MM-DD") }
+            $and: [
+                { begin: { $gte: season.format("YYYY-MM-DD") } },
+                { begin: { $lte: season.add(3, "months").format("YYYY-MM-DD") } }
+            ]
         }) as Item[];
     }
+    // include old bangumi
+    // begin time before the season end && end time after the season begin
     else {
         bangumiData = await ctx.database.get('bangumi', {
-            $or: [
-                { begin: { $gte: season.format("YYYY-MM-DD") } },
-                { end: { $gte: season.format("YYYY-MM-DD") } },
-                { end: "" },
-                { end: undefined }
+            $and: [
+                {
+                    $or: [
+                        { end: { $gte: season.format("YYYY-MM-DD") } },
+                        { end: "" },
+                        { end: undefined }
+                    ]
+                },
+                { begin: { $lte: season.add(3, "months").format("YYYY-MM-DD") } }
             ]
         }) as Item[];
     }
@@ -77,10 +87,9 @@ const checkPeriodHitDay = (timeNow: moment.Moment, begin: moment.Moment, period:
  * @param timeNow current time
  * @returns bangumi data of today
  */
-const getTodayBangumiData = async (ctx: Context, config: Config): Promise<Item[]> => {
+const getTodayBangumiData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<Item[]> => {
     // TODO: bangumi API method?
-    const timeNow = moment();
-    const seasonBangumiData = await getSeasonBangumiData(ctx, config);
+    const seasonBangumiData = await getSeasonBangumiData(timeNow, ctx, config);
     const todayBangumiData = seasonBangumiData.filter((b) => {
         // check if the bangumi is already end
         if (b.end !== "" && b.end !== undefined) {
