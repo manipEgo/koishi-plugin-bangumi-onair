@@ -63,8 +63,9 @@ export function apply(ctx: Context, config: Config) {
       await session.execute('onair.update');
     }
 
+    const timeNow = moment().add(offset, 'days');
     // get bangumi data of today, plus offset
-    const bangumi = await getTodayBangumiData(moment().add(offset, 'days'), ctx, config);
+    const bangumi = await getTodayBangumiData(timeNow, ctx, config);
     // sort by begin time
     bangumi.sort((a, b) => {
       return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
@@ -86,12 +87,12 @@ export function apply(ctx: Context, config: Config) {
     // mark current time between bangumi
     let timePointer = 0;
     while (timePointer < bangumiStringList.length) {
-      if (moment(bangumi[timePointer].begin).format('HH:mm') > moment().format('HH:mm')) {
+      if (moment(bangumi[timePointer].begin).format('HH:mm') > timeNow.format('HH:mm')) {
         break;
       }
       timePointer++;
     }
-    const timeMarker = "> --- " + moment().format('HH:mm') + " ---\n";
+    const timeMarker = "> --- " + timeNow.format('YY/MM/DD HH:mm') + " ---\n";
     const bangumiString = bangumiStringList.slice(0, timePointer).join('\n') + '\n' + timeMarker + bangumiStringList.slice(timePointer).join('\n');
     session.sendQueued(bangumiString);
   });
@@ -108,7 +109,8 @@ export function apply(ctx: Context, config: Config) {
       await session.execute('onair.update');
     }
 
-    const bangumi = await getSeasonBangumiData(moment().add(offset * 3, 'months'), ctx, config);
+    const timeNow = moment().add(offset * 3, 'months');
+    const bangumi = await getSeasonBangumiData(timeNow, ctx, config);
     // sort by isoWeekday -> begin time -> dayOfYear
     bangumi.sort((a, b) => {
       if (moment(a.begin).isoWeekday() === moment(b.begin).isoWeekday()) {
@@ -147,17 +149,20 @@ export function apply(ctx: Context, config: Config) {
     }
 
     // separate season bangumi message by weekdays
+    const seasonMarker = `> --- ${timeNow.format('YY/MM')} ---`;
     if (config.separateWeekdays) {
+      session.sendQueued(seasonMarker);
       for (let i = 0; i < 7; i++) {
-        session.sendQueued(`--- ${moment().isoWeekday(i + 1).format('dddd')} ---\n` +
+        // TODO: beter formatting
+        session.sendQueued(`--- ${moment.weekdays(i + 1)} ---\n` +
           bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n');
       }
     }
     // display season bangumi message in one message
     else {
-      let bangumiString = "";
+      let bangumiString = seasonMarker + '\n';
       for (let i = 0; i < 7; i++) {
-        bangumiString += `--- ${moment().isoWeekday(i + 1).format('dddd')} ---\n`;
+        bangumiString += `--- ${moment.weekdays(i + 1)} ---\n`;
         bangumiString += bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n';
       }
       session.sendQueued(bangumiString);
