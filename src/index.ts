@@ -173,7 +173,6 @@ export function apply(ctx: Context, config: Config) {
     ctx.command('onair.update')
         .alias('bupdate')
         .action(async ({ session }) => {
-            await session.execute('onair.drop');
             ctx.database.extend('bangumi', {
                 id: 'unsigned',
                 title: 'string',

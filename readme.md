@@ -168,9 +168,9 @@ Output bangumi that is onair **this season plus offset**.
 
 ### onair.update:
 
-Will first try to drop the old database, then fetch data and upsert into the new database.
+Will fetch data from CDN and upsert into the database.
 
-将首先尝试删除旧数据库，然后重新获取数据并存入新数据库。
+将从 CDN 获取数据并存入数据库。
 
 ```
 > onair.update
