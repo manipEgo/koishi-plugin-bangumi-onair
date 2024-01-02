@@ -209,7 +209,7 @@ export function apply(ctx: Context, config: Config) {
       });
     }
     // save bangumi items to database
-    await ctx.database.upsert('bangumi', bangumiData.items);
+    await ctx.database.upsert('bangumi', bangumiWithId);
     // TODO: localization
     session.sendQueued(session.text('.updated'));
   });
