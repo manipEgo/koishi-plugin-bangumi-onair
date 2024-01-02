@@ -34,6 +34,8 @@ export interface Config {
 
 export const name = 'bangumi-onair'
 
+export const inject = ['database']
+
 export const Config: Schema<Config> = Schema.object({
     // exclude bangumi of seasons before this season
     excludeOld: Schema.boolean().default(false),
