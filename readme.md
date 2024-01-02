@@ -4,11 +4,11 @@
 
 This is a plugin for [Koishi](https://koishi.chat/).
 
-Display bangumi that is onair (today/this season) in text.
+Query and display bangumi that is onair today/this season in text, can also query any day/season.
 
 这是一个 [Koishi](https://koishi.chat/) 插件。
 
-以文本展示当前正在放送的番剧（今日/本季）。
+查询并以文本展示 今日/本季 正在放送的番剧，也支持查询任意 一天/一季。
 
 ## Examples / 示例
 
