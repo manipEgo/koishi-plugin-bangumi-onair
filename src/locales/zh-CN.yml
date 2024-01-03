@@ -10,6 +10,7 @@ commands:
     messages:
       updating: "正在更新动画数据库……"
       updated: "动画数据库已更新"
+      failed: "更新失败"
   onair.drop:
     description: "删除动画数据库"
     messages:

@@ -10,6 +10,7 @@ commands:
     messages:
       updating: "updating bangumi database…"
       updated: "bangumi database updated"
+      failed: "update failed"
   onair.drop:
     description: "drop bangumi database"
     messages:
