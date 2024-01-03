@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bangumi-onair",
   "description": "Query bangumi-data & display bangumi onair in text",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -28,8 +28,8 @@
   },
   "koishi": {
     "description": {
-      "en": "Query and display bangumi that is onair today/this season in text, can also query any day/season",
-      "zh": "查询并以文本展示 今日/本季 正在放送的番剧，也支持查询任意 一天/一季"
+      "en": "Query and display bangumi that is onair today/this season in text. can also query any day/season. Support bangumi-data & bangumi-API data source.",
+      "zh": "查询并以文本展示 今日/本季 正在放送的番剧。也支持查询任意 一天/一季。支持 bangumi-data & bangumi-API 数据源。"
     },
     "service": {
       "required": [
