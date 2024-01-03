@@ -180,7 +180,7 @@ export function apply(ctx: Context, config: Config) {
                 primary: 'id'
             });
             ctx.database.extend(onairDatabase, {
-                id: 'string',
+                id: 'unsigned',
                 url: 'string',
                 type: 'unsigned',
                 name: 'string',
