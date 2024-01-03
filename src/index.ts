@@ -85,7 +85,7 @@ export function apply(ctx: Context, config: Config) {
                 }
                 timePointer++;
             }
-            const timeMarker = "> --- " + timeNow.format('YY/MM/DD HH:mm') + " ---\n";
+            const timeMarker = "> --- " + timeNow.format('HH:mm YY/MM/DD') + " ---\n";
             const bangumiString = bangumiStringList.slice(0, timePointer).join('\n') + '\n' + timeMarker + bangumiStringList.slice(timePointer).join('\n');
             session.sendQueued(bangumiString);
         });
@@ -107,7 +107,7 @@ export function apply(ctx: Context, config: Config) {
             const bangumiStringList = bangumi.map((b) => {
                 return config.showChineseTitle ? b.name_cn : b.name;
             });
-            const weekdayMarker = "--- " +  timeNow.format("dddd") + " ---\n";
+            const weekdayMarker = "--- " +  timeNow.format("dddd YY/MM/DD") + " ---\n";
             const bangumiString = weekdayMarker + bangumiStringList.join('\n');
             session.sendQueued(bangumiString);
         });
