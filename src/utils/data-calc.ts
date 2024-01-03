@@ -115,13 +115,19 @@ const getTodayBangumiData = async (timeNow: moment.Moment, ctx: Context, config:
 
 
 const checkDatabasesExist = async (ctx: Context): Promise<boolean> => {
-    Promise.all([
+    if (await Promise.all([
         ctx.database.get(archiveDatabase, {}),
         ctx.database.get(archiveDatabase, {})
     ]).catch(async (error) => {
+        return Promise.reject();
+    }).then(() => {
+        return true;
+    }, () => {
         return false;
-    });
-    return true;
+    })) {
+        return true;
+    }
+    return false;
 }
 
 const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context): Promise<BangumiOnair[]> => {

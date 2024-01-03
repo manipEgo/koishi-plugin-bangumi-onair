@@ -47,7 +47,7 @@ export function apply(ctx: Context, config: Config) {
         .alias('bd')
         .action(async ({ session }, offset) => {
             // check if database exists
-            if (await checkDatabasesExist(ctx)) {
+            if (!await checkDatabasesExist(ctx)) {
                 await session.execute('onair.update');
             }
 
@@ -90,7 +90,7 @@ export function apply(ctx: Context, config: Config) {
         .alias('bcd')
         .action(async ({ session }, offset) => {
             // check if database exists
-            if (await checkDatabasesExist(ctx)) {
+            if (!await checkDatabasesExist(ctx)) {
                 await session.execute('onair.update');
             }
 
@@ -112,7 +112,7 @@ export function apply(ctx: Context, config: Config) {
         .alias('bs')
         .action(async ({ session }, offset) => {
             // check if database exists
-            if (await checkDatabasesExist(ctx)) {
+            if (!await checkDatabasesExist(ctx)) {
                 await session.execute('onair.update');
             }
 
