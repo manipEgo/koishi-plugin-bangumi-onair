@@ -181,7 +181,7 @@ export function apply(ctx: Context, config: Config) {
                 name_cn: 'string',
                 summary: 'string',
                 air_date: 'string',
-                air_weekday: 'json',
+                air_weekday: 'unsigned',
                 images: 'json',
                 eps: 'unsigned',
                 eps_count: 'unsigned',

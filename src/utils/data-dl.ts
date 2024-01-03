@@ -20,11 +20,7 @@ const getCDNData = async ( session ) => {
 const getCalendarData = async ( session ) => {
     try {
         const calendarData = await fetch(calendarAPI).then((res) => res.json());
-        const bangumiOnair = calendarData.map((b) => {
-            let items = b.items;
-            items.map((i) => i.air_weekday = b.weekday);
-            return items;
-        });
+        const bangumiOnair = calendarData.map((b) => b.items);
         return bangumiOnair.reduce((accumulator, value) => accumulator.concat(value), []);
     }
     catch (error) {

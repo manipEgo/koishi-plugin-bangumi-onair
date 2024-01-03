@@ -316,7 +316,7 @@ declare interface BangumiOnair {
     name_cn: string,
     summary: string,
     air_date: string,
-    air_weekday: Weekday,
+    air_weekday: number,
     images: Images,
     eps: number,
     eps_count: number,
