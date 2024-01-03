@@ -2,7 +2,12 @@ import { Context, Schema } from 'koishi'
 
 import moment from 'moment';
 
-import { getSeasonBangumiData, getTodayBangumiData, getCalendarDayData, checkDatabasesExist } from './utils/data-calc';
+import {
+    getSeasonBangumiData,
+    getTodayBangumiData,
+    getCalendarSeasonData,
+    getCalendarDayData,
+    checkDatabasesExist } from './utils/data-calc';
 import { getCDNData, getCalendarData } from './utils/data-dl';
 
 
@@ -96,7 +101,7 @@ export function apply(ctx: Context, config: Config) {
 
             // get bangumi data of today, plus offset
             const timeNow = moment().add(offset, 'days');
-            const bangumi = await getCalendarDayData(timeNow, ctx);
+            const bangumi = await getCalendarDayData(timeNow, ctx, config);
 
             // convert to list of strings
             const bangumiStringList = bangumi.map((b) => {
@@ -116,6 +121,7 @@ export function apply(ctx: Context, config: Config) {
                 await session.execute('onair.update');
             }
 
+            // get bangumi data of this season, plus offset
             const timeNow = moment().add(offset * 3, 'months');
             const bangumi = await getSeasonBangumiData(timeNow, ctx, config);
             // sort by isoWeekday -> begin time -> dayOfYear
@@ -148,6 +154,70 @@ export function apply(ctx: Context, config: Config) {
             while (weekday < 7) {
                 while (weekdayPointer[weekday] < bangumiStringList.length) {
                     if (moment(bangumi[weekdayPointer[weekday]].begin).isoWeekday() > weekday) {
+                        break;
+                    }
+                    weekdayPointer[weekday]++;
+                }
+                weekday++;
+            }
+
+            // separate season bangumi message by weekdays
+            const seasonMarker = `> --- ${timeNow.format('YY/MM')} ---`;
+            if (config.separateWeekdays) {
+                session.sendQueued(seasonMarker);
+                for (let i = 0; i < 7; i++) {
+                    // TODO: beter formatting
+                    session.sendQueued(`--- ${moment.weekdays(i + 1)} ---\n` +
+                        bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n');
+                }
+            }
+            // display season bangumi message in one message
+            else {
+                let bangumiString = seasonMarker + '\n';
+                for (let i = 0; i < 7; i++) {
+                    bangumiString += `--- ${moment.weekdays(i + 1)} ---\n`;
+                    bangumiString += bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n';
+                }
+                session.sendQueued(bangumiString);
+            }
+        });
+
+    // bangumi onair calendar season
+    ctx.command('onair.cseason')
+        .alias('bcs')
+        .action(async ({ session }) => {
+            // check if database exists
+            if (!await checkDatabasesExist(ctx)) {
+                await session.execute('onair.update');
+            }
+
+            // get bangumi data of this season
+            const timeNow = moment();
+            const bangumi = await getCalendarSeasonData(timeNow, ctx, config);
+
+            // sort by weekdays
+            bangumi.sort((a, b) => {
+                if (a.air_weekday === b.air_weekday) {
+                    return a.air_date > b.air_date ? 1 : -1;
+                }
+                return a.air_weekday > b.air_weekday ? 1 : -1;
+            });
+            //convert to list of strings
+            const bangumiStringList = bangumi.map((b) => {
+                const formatDate = moment(b.air_date).format("MM-DD");
+                const prefix = formatDate === "Invalid date" ? "00-00" : formatDate;
+                if (config.showChineseTitle) {
+                    return `${prefix}   ${b.name_cn == "" ? b.name : b.name_cn ?? b.name}`;
+                }
+                return `${prefix}   ${b.name}`;
+            });
+
+            // mark weekdays between bangumi
+            let weekdayPointer = [0, 0, 0, 0, 0, 0, 0, bangumiStringList.length];
+            let weekday = 1;
+            while (weekday < 7) {
+                while (weekdayPointer[weekday] < bangumiStringList.length) {
+                    if (moment(bangumi[weekdayPointer[weekday]].air_date).isoWeekday() > weekday) {
                         break;
                     }
                     weekdayPointer[weekday]++;
