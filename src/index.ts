@@ -8,22 +8,9 @@ import { getCDNData } from './utils/data-manip';
 
 declare module 'koishi' {
     interface Tables {
-        bangumi: Bangumi
+        bangumi: Bangumi,
+        bangumiOnair: BangumiOnair
     }
-}
-
-export interface Bangumi {
-    id: number;
-    title: string;
-    titleTranslate: Record<Language, string[]>;
-    type: ItemType;
-    lang: Language;
-    officialSite: string;
-    begin: string;
-    broadcast: string;
-    end: string;
-    comment: string;
-    sites: Site[];
 }
 
 export interface Config {

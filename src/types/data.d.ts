@@ -219,6 +219,22 @@ declare type RawJson = {
     items: Item[],
 };
 
+/**
+ * bangumi-data 数据库表格
+ */
+declare interface Bangumi {
+    id: number;
+    title: string;
+    titleTranslate: Record<Language, string[]>;
+    type: ItemType;
+    lang: Language;
+    officialSite: string;
+    begin: string;
+    broadcast: string;
+    end: string;
+    comment: string;
+    sites: Site[];
+}
 
 // ========== bangumi API ========== //
 
@@ -288,7 +304,11 @@ declare type Collection = {
     dropped: number
 }
 
-declare type BangumiOnair = {
+
+/**
+ * bangumi-API 数据库表格
+ */
+declare interface BangumiOnair {
     id: string,
     url: string,
     type: number,
