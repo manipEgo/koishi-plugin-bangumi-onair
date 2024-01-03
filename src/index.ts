@@ -220,7 +220,6 @@ export function apply(ctx: Context, config: Config) {
 
             // get calendar data from API
             const calendarData = await getCalendarData(session);
-            console.log(calendarData[0])
             // save calendar data to database
             await ctx.database.upsert('bangumiOnair', calendarData);
 
