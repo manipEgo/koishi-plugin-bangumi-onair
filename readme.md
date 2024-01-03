@@ -6,9 +6,29 @@ This is a plugin for [Koishi](https://koishi.chat/).
 
 Query and display bangumi that is onair today/this season in text, can also query any day/season.
 
+Supported Sources:
+ - `bangumi-data`:
+   - **Slow update** at the beginning of seasons
+   - Includes bangumi of all time
+   - Includes start time (accurate to minute)
+ - `bangumi-API-Calendar`:
+   - **Fast update** at the beginning of seasons
+   - Only includes bangumi of this season
+   - Does not include start time
+
 这是一个 [Koishi](https://koishi.chat/) 插件。
 
 查询并以文本展示 今日/本季 正在放送的番剧，也支持查询任意 一天/一季。
+
+支持的数据源：
+ - `bangumi-data`:
+   - **换季更新慢**
+   - 包含历史动画
+   - 包含播出时间（精确到分钟）
+ - `bangumi-API-Calendar`:
+   - **换季更新快**
+   - 只包含本季动画
+   - 不包含播出时间
 
 ## Examples / 示例
 
@@ -18,9 +38,13 @@ Will first check if database exists. If not, will automatically execute `.update
 
 Output bangumi that is onair **today plus offset**.
 
+Source `bangumi-data`.
+
 将首先检查数据库是否存在。如果不存在则自动执行 `.update`。
 
 输出**今日加上偏移量**当天放送的动画。
+
+数据来源 `bangumi-data`。
 
 ```
 > onair.day
@@ -59,15 +83,51 @@ Output bangumi that is onair **today plus offset**.
 > onair.day 1
 ```
 
+### onair.cday [offset: number]:
+
+Will first check if database exists. If not, will automatically execute `.update`.
+
+Output bangumi that is onair **today plus offset**.
+
+Source `bangumi-API`.
+
+将首先检查数据库是否存在。如果不存在则自动执行 `.update`。
+
+输出**今日加上偏移量**当天放送的动画。
+
+数据来源 `bangumi-API`。
+
+```
+> onair.cday
+# or use alias / 或者使用别名
+> bcd
+```
+
+<details>
+<summary>output / 输出:</summary>
+
+> --- Wednesday 24/01/03 ---<br>
+> 弱角友崎同学 第二季<br>
+> 欢迎来到实力至上主义教室 第三季<br>
+> 异修罗<br>
+> 梦想成为魔法少女<br>
+
+</details>
+
 ### onair.season [offset: number]:
 
 Will first check if database exists. If not, will automatically execute `.update`.
 
 Output bangumi that is onair **this season plus offset**.
 
+Source `bangumi-data`.
+
 将首先检查数据库是否存在。如果不存在则自动执行 `.update`。
 
 输出**本季加上偏移量**当季放送的动画。
+
+数据来源 `bangumi-data`。
+
 
 ```
 > onair.season
@@ -166,11 +226,115 @@ Output bangumi that is onair **this season plus offset**.
 > onair.season -1
 ```
 
+### onair.cseason:
+
+Will first check if database exists. If not, will automatically execute `.update`.
+
+Output bangumi that is onair **this season**.
+
+Source `bangumi-API`.
+
+将首先检查数据库是否存在。如果不存在则自动执行 `.update`。
+
+输出**本季**当季放送的动画。
+
+数据来源 `bangumi-API`。
+
+```
+> onair.cseason
+# or use alias / 或者使用别名
+> bcs
+```
+
+<details>
+<summary>output / 输出:</summary>
+
+> \> --- 24/01 ---<br>
+> --- Monday ---<br>
+> 01-01   万古狂帝<br>
+> 01-08   奇异贤伴 黑色天使 第2部分<br>
+> 01-08   公主大人“拷问”的时间到了<br>
+> 01-08   愚蠢天使与恶魔共舞<br>
+> 01-08   至高之牌 第二季<br>
+> 01-08   北海道辣妹贼拉可爱<br>
+> 01-08   事与愿违的不死冒险者<br>
+> 01-08   月光下的异世界之旅 第二幕<br>
+> 01-22   大宇宙时代<br>
+> --- Tuesday ---<br>
+> 01-02   无脑魔女 第二季<br>
+> 01-09   忍ばない！クリプトニンジャ咲耶 弐ノ巻<br>
+> 01-09   反派大小姐等级99～我是隐藏BOSS但不是魔王～<br>
+> 01-09   通灵王 FLOWERS<br>
+> --- Wednesday ---<br>
+> 10-20   海贼王<br>
+> 01-03   梦想成为魔法少女<br>
+> 01-03   异修罗<br>
+> 01-03   欢迎来到实力至上主义教室 第三季<br>
+> 01-03   弱角友崎同学 第二季<br>
+> 01-10   炎上撲滅！魔法少女アイ子<br>
+> 01-10   战国妖狐<br>
+> 01-10   到了30岁还是处男，似乎会变成魔法师<br>
+> 01-10   金属胭脂<br>
+> 01-10   外科医生爱丽丝<br>
+> 01-24   异人君莫邪<br>
+> --- Thursday ---<br>
+> 01-04   秒杀外挂太强了，异世界的家伙们根本就不是对手。<br>
+> 01-04   迷宫饭<br>
+> 01-04   魔都精兵的奴隶<br>
+> 01-11   人气温泉『异世界温泉』开拓记 ～40岁左右的温泉爱好者转世到了悠闲的温泉天堂～<br>
+> 01-11   月刊妄想科学<br>
+> 01-11   勇气爆发BangBravern<br>
+> 01-11   福星小子 第二季<br>
+> 01-11   魔女与野兽<br>
+> 01-18   地下城与勇士之破界少女<br>
+> --- Friday ---<br>
+> 09-29   葬送的芙莉莲<br>
+> 01-05   百千家的妖怪王子<br>
+> 01-05   碰之道<br>
+> 01-05   超普通县千叶传说<br>
+> 01-05   佐佐木与文鸟小哔<br>
+> 01-05   治愈魔法的错误使用方法<br>
+> 01-12   スナックバス江<br>
+> 01-12   最弱的驯养师开启的捡垃圾的旅途。<br>
+> 01-19   地狱客栈<br>
+> 01-26   剑网3·侠肝义胆沈剑心 第三季（下卷）<br>
+> 01-08   名侦探柯南<br>
+> --- Saturday ---<br>
+> 01-06   最强肉盾的迷宫攻略～拥有稀少技能体力9999的肉盾，被勇者队伍辞退了～<br>
+> 01-06   貼りまわれ！こいぬ<br>
+> 01-06   指尖相触，恋恋不舍<br>
+> 01-06   物理魔法使马修 第二季<br>
+> 01-06   我心里危险的东西 第二季<br>
+> 01-06   婚戒物语<br>
+> 01-06   青之驱魔师 岛根启明结社篇<br>
+> 01-06   王者天下 第五季<br>
+> 01-06   我独自升级<br>
+> 01-13   卡片战斗先导者 DivineZ<br>
+> 01-13   ぶっちぎり?!<br>
+> 01-13   王者荣耀：荣耀之章 碎月篇<br>
+> 01-20   肥志百科 原来你是这样的发明<br>
+> 00-00   我的三体 第四季<br>
+> --- Sunday ---<br>
+> 01-07   挣扎吧，亚当<br>
+> 01-07   Grimsburg<br>
+> 01-07   轮回七次的反派大小姐，在前敌国享受随心所欲的新婚生活<br>
+> 01-07   休假日的坏人先生<br>
+> 01-07   因为不是命中注定的同伴而被赶出了勇者的队伍、从此以后过上了悠闲的隐居生活 第二季<br>
+> 01-07   一世之尊<br>
+> 01-07   为了在异世界也能抚摸毛茸茸而努力<br>
+> 01-14   不白吃古诗词漫游记 第一季<br>
+> 01-14   明治击剑－1874－<br>
+> 01-14   暗芝居 第十二季<br>
+> 01-14   狩火之王 第二季<br>
+> 01-21   怪兽 一百三情飞龙侍极<br>
+
+</details>
+
 ### onair.update:
 
-Will fetch data from CDN and upsert into the database.
+Will fetch data from CDN & bangumi-API and upsert into the database.
 
-将从 CDN 获取数据并存入数据库。
+将从 CDN & bangumi-API 获取数据并存入数据库。
 
 ```
 > onair.update
@@ -191,16 +355,17 @@ Will try to drop the database. Not called under normal condition.
 ```
 
 ## TODOs / 开发计划
- - [x] 功能：显示本季动画 -> `.season`
+ - [x] 功能：显示本季动画 -> `.season` | `.cseason`
    - [x] 参数：季度（每三月）偏移 -> `.season [offset: number]`
- - [x] 功能：显示今日动画 -> `.day`
-   - [x] 参数：日期偏移 -> `.day [offset: number]`
+ - [x] 功能：显示今日动画 -> `.day` | `.cday`
+   - [x] 参数：日期偏移 -> `.day [offset: number]` | `.cday [offset: number]`
  - [x] 功能：更新动画数据 -> `.update`
  - [x] 功能：清除动画数据 -> `.drop`
  - [x] 设置：排除非本季度开播动画 -> `excludeOld`
  - [x] 设置：显示中文标题 -> `showChineseTitle`
  - [x] 设置：按星期分割显示季度动画，避免消息过长 -> `separateWeekdays`
  - [x] 基础：使用数据库减少请求
+ - [x] 基础：使用 *bangumi-API-Calendar* 获取准确当日数据
  - [x] 语言：中文设置和提示
  - [ ] 设置：限宽
  - [ ] 设置：限长
@@ -211,8 +376,8 @@ Will try to drop the database. Not called under normal condition.
  - [ ] 功能：订阅开播提醒
  - [ ] 功能：参数覆写设置
  - [ ] 功能：以图片展示
- - [ ] 基础：使用 bangumi API 获取准确当日数据
 
 ## Credits / 鸣谢
  - [Koishi](https://koishi.chat/)
+ - [Bangumi API](https://github.com/bangumi/api/)
  - [Bangumi Data](https://github.com/bangumi-data/bangumi-data)
