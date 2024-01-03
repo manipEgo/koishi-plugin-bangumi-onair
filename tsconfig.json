@@ -15,7 +15,8 @@
     "types": [
       "node",
       "yml-register/types"
-    ]
+    ],
+    "resolveJsonModule": true
   },
   "include": [
     "src"
