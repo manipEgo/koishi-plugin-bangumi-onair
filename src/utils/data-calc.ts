@@ -114,4 +114,15 @@ const getTodayBangumiData = async (timeNow: moment.Moment, ctx: Context, config:
 }
 
 
-export { getSeasonBangumiData, getTodayBangumiData }
+const checkDatabasesExist = async (ctx: Context): Promise<boolean> => {
+    Promise.all([
+        ctx.database.get(archiveDatabase, {}),
+        ctx.database.get(archiveDatabase, {})
+    ]).catch(async (error) => {
+        return false;
+    });
+    return true;
+}
+
+
+export { getSeasonBangumiData, getTodayBangumiData, checkDatabasesExist }
