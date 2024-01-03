@@ -130,16 +130,33 @@ const checkDatabasesExist = async (ctx: Context): Promise<boolean> => {
     return false;
 }
 
-const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context): Promise<BangumiOnair[]> => {
+const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<BangumiOnair[]> => {
     const weekday = timeNow.isoWeekday();
-    const calendarDayData = await ctx.database.get(onairDatabase, {
+    if (config.excludeOld) {
+        return await ctx.database.get(onairDatabase, {
+            $and: [
+                { air_weekday: weekday },
+                { air_date: { $gte: getSeason(timeNow).format("YYYY-MM-DD") } },
+                { air_date: { $lte: timeNow.format("YYYY-MM-DD") } },
+            ]
+        }) as BangumiOnair[];
+    }
+    return await ctx.database.get(onairDatabase, {
         $and: [
             { air_weekday: weekday },
             { air_date: { $lte: timeNow.format("YYYY-MM-DD") } },
         ]
     }) as BangumiOnair[];
-    return calendarDayData;
+}
+
+const getCalendarSeasonData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<BangumiOnair[]> => {
+    if (config.excludeOld) {
+        return await ctx.database.get(onairDatabase, {}) as BangumiOnair[];
+    }
+    return await ctx.database.get(onairDatabase, {
+        air_date: { $gte: getSeason(timeNow).format("YYYY-MM-DD") }
+    });
 }
 
 
-export { getSeasonBangumiData, getTodayBangumiData, getCalendarDayData, checkDatabasesExist }
+export { getSeasonBangumiData, getTodayBangumiData, getCalendarSeasonData, getCalendarDayData, checkDatabasesExist }
