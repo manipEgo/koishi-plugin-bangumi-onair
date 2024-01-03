@@ -208,7 +208,7 @@ declare type SiteMetaRecord = Record<SiteList, SiteMeta>;
 /**
  * CDN 数据
  */
-declare type rawJson = {
+declare type RawJson = {
     /**
      * 站点元数据
      */
@@ -218,3 +218,89 @@ declare type rawJson = {
      */
     items: Item[],
 };
+
+
+// ========== bangumi API ========== //
+
+declare type Weekday = 
+    { en: "Mon", cn: "星期一", ja: "月耀日" } |
+    { en: "Tue", cn: "星期二", ja: "火耀日" } |
+    { en: "Wed", cn: "星期三", ja: "水耀日" } |
+    { en: "Thu", cn: "星期四", ja: "木耀日" } |
+    { en: "Fri", cn: "星期五", ja: "金耀日" } |
+    { en: "Sat", cn: "星期六", ja: "土耀日" } |
+    { en: "Sun", cn: "星期日", ja: "日耀日" }
+
+declare type Images = {
+    large: string,
+    common: string,
+    medium: string,
+    small: string,
+    grid: string
+}
+
+declare type Rating = {
+    /**
+     * 总评分人数
+     */
+    total: number,
+    /**
+     * 各分值评分人数
+     */
+    count: {
+        1: number,
+        2: number,
+        3: number,
+        4: number,
+        5: number,
+        6: number,
+        7: number,
+        8: number,
+        9: number,
+        10: number
+    },
+    /**
+     * 评分
+     */
+    score: number
+}
+
+declare type Collection = {
+    /**
+     * 想看
+     */
+    wish: number,
+    /**
+     * 看过
+     */
+    collect: number,
+    /**
+     * 在看
+     */
+    doing: number,
+    /**
+     * 搁置
+     */
+    on_hold: number,
+    /**
+     * 抛弃
+     */
+    dropped: number
+}
+
+declare type BangumiOnair = {
+    id: string,
+    url: string,
+    type: number,
+    name: string,
+    name_cn: string,
+    summary: string,
+    air_date: string,
+    air_weekday: Weekday,
+    images: Images,
+    eps: number,
+    eps_count: number,
+    rating: Rating,
+    rank: number,
+    collection: Collection
+}

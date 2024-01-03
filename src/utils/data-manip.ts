@@ -5,10 +5,11 @@ const getCDNData = async ( session ) => {
             await fetch("https://cdn.jsdelivr.net/npm/bangumi-data/dist/data.json"
             ).then((res) => res.text())
         );
-        return await response.json() as rawJson;
+        return await response.json() as RawJson;
     }
     catch (error) {
         console.error(error);
+        // TODO: localization
         session.sendQueued(`Failed to get bangumi data from CDN.`);
         return;
     }
