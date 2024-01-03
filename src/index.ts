@@ -2,7 +2,7 @@ import { Context, Schema } from 'koishi'
 
 import moment from 'moment';
 
-import { getSeasonBangumiData, getTodayBangumiData } from './utils/data-calc';
+import { getSeasonBangumiData, getTodayBangumiData } from './utils/data-get';
 import { getCDNData } from './utils/data-manip';
 
 
