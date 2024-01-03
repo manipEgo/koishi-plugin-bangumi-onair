@@ -2,7 +2,7 @@ import { Context, Schema } from 'koishi'
 
 import moment from 'moment';
 
-import { getSeasonBangumiData, getTodayBangumiData, checkDatabasesExist } from './utils/data-calc';
+import { getSeasonBangumiData, getTodayBangumiData, getCalendarDayData, checkDatabasesExist } from './utils/data-calc';
 import { getCDNData, getCalendarData } from './utils/data-dl';
 
 
@@ -82,6 +82,28 @@ export function apply(ctx: Context, config: Config) {
             }
             const timeMarker = "> --- " + timeNow.format('YY/MM/DD HH:mm') + " ---\n";
             const bangumiString = bangumiStringList.slice(0, timePointer).join('\n') + '\n' + timeMarker + bangumiStringList.slice(timePointer).join('\n');
+            session.sendQueued(bangumiString);
+        });
+
+    // bangumi onair calender day
+    ctx.command('onair.cday [offset:number]')
+        .alias('bcd')
+        .action(async ({ session }, offset) => {
+            // check if database exists
+            if (await checkDatabasesExist(ctx)) {
+                await session.execute('onair.update');
+            }
+
+            // get bangumi data of today, plus offset
+            const timeNow = moment().add(offset, 'days');
+            const bangumi = await getCalendarDayData(timeNow, ctx);
+
+            // convert to list of strings
+            const bangumiStringList = bangumi.map((b) => {
+                return config.showChineseTitle ? b.name_cn : b.name;
+            });
+            const weekdayMarker = "--- " +  timeNow.format("dddd") + " ---\n";
+            const bangumiString = weekdayMarker + bangumiStringList.join('\n');
             session.sendQueued(bangumiString);
         });
 

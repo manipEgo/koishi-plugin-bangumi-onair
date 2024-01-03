@@ -238,15 +238,6 @@ declare interface Bangumi {
 
 // ========== bangumi API ========== //
 
-declare type Weekday = 
-{ en: string = "Mon", cn: string = "星期一", ja: string = "月耀日", id: number = 1 } |
-{ en: string = "Tue", cn: string = "星期二", ja: string = "火耀日", id: number = 2 } |
-{ en: string = "Wed", cn: string = "星期三", ja: string = "水耀日", id: number = 3 } |
-{ en: string = "Thu", cn: string = "星期四", ja: string = "木耀日", id: number = 4 } |
-{ en: string = "Fri", cn: string = "星期五", ja: string = "金耀日", id: number = 5 } |
-{ en: string = "Sat", cn: string = "星期六", ja: string = "土耀日", id: number = 6 } |
-{ en: string = "Sun", cn: string = "星期日", ja: string = "日耀日", id: number = 7 }
-
 declare type Images = {
     large: string,
     common: string,

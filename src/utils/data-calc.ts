@@ -124,5 +124,16 @@ const checkDatabasesExist = async (ctx: Context): Promise<boolean> => {
     return true;
 }
 
+const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context): Promise<BangumiOnair[]> => {
+    const weekday = timeNow.isoWeekday();
+    const calendarDayData = await ctx.database.get(onairDatabase, {
+        $and: [
+            { air_weekday: weekday },
+            { air_date: { $lte: timeNow.format("YYYY-MM-DD") } },
+        ]
+    }) as BangumiOnair[];
+    return calendarDayData;
+}
 
-export { getSeasonBangumiData, getTodayBangumiData, checkDatabasesExist }
+
+export { getSeasonBangumiData, getTodayBangumiData, getCalendarDayData, checkDatabasesExist }
