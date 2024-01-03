@@ -1,3 +1,5 @@
+const calendarAPI = "https://api.bgm.tv/calendar";
+
 const getCDNData = async ( session ) => {
     // get bangumi data from CDN
     try {
@@ -15,4 +17,16 @@ const getCDNData = async ( session ) => {
     }
 }
 
-export { getCDNData }
+const getCalendarData = async ( session ) => {
+    try {
+        const calendarData = await fetch(calendarAPI).then((res) => res.json()) as BangumiOnair;
+        return calendarData;
+    }
+    catch (error) {
+        console.error(error);
+        session.sendQueued(`Failed to get bangumi data from API.`);
+    }
+}
+
+
+export { getCDNData, getCalendarData }
