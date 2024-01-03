@@ -36,7 +36,7 @@ const getSeasonBangumiData = async (timeNow: moment.Moment, ctx: Context, config
     // exclude old bangumi
     // begin time falls in the season
     if (config.excludeOld) {
-        bangumiData = await ctx.database.get('bangumi', {
+        bangumiData = await ctx.database.get(archiveDatabase, {
             $and: [
                 { begin: { $gte: season.format("YYYY-MM-DD") } },
                 { begin: { $lte: season.add(3, "months").format("YYYY-MM-DD") } }
@@ -46,7 +46,7 @@ const getSeasonBangumiData = async (timeNow: moment.Moment, ctx: Context, config
     // include old bangumi
     // begin time before the season end && end time after the season begin
     else {
-        bangumiData = await ctx.database.get('bangumi', {
+        bangumiData = await ctx.database.get(archiveDatabase, {
             $and: [
                 {
                     $or: [

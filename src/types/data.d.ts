@@ -324,3 +324,10 @@ declare interface BangumiOnair {
     rank: number,
     collection: Collection
 }
+
+
+// ========== global fields ========== //
+
+declare var archiveDatabase;
+
+declare var onairDatabase;

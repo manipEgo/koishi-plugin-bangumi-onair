@@ -8,10 +8,12 @@ import { getCDNData, getCalendarData } from './utils/data-manip';
 
 declare module 'koishi' {
     interface Tables {
-        bangumi: Bangumi,
-        bangumiOnair: BangumiOnair
+        "bangumi.archive": Bangumi,
+        "bangumi.onair": BangumiOnair
     }
 }
+archiveDatabase = "bangumi.archive";
+onairDatabase = "bangumi.onair";
 
 export interface Config {
     excludeOld: boolean;
@@ -46,7 +48,7 @@ export function apply(ctx: Context, config: Config) {
         .action(async ({ session }, offset) => {
             // check if database exists
             try {
-                await ctx.database.get('bangumi', {});
+                await ctx.database.get(archiveDatabase, {});
             }
             catch (error) {
                 await session.execute('onair.update');
@@ -92,7 +94,7 @@ export function apply(ctx: Context, config: Config) {
         .action(async ({ session }, offset) => {
             // check if database exists
             try {
-                await ctx.database.get('bangumi', {});
+                await ctx.database.get(archiveDatabase, {});
             }
             catch (error) {
                 await session.execute('onair.update');
@@ -162,7 +164,7 @@ export function apply(ctx: Context, config: Config) {
     ctx.command('onair.update')
         .alias('bupdate')
         .action(async ({ session }) => {
-            ctx.database.extend('bangumi', {
+            ctx.database.extend(archiveDatabase, {
                 id: 'unsigned',
                 title: 'string',
                 titleTranslate: 'json',
@@ -177,7 +179,7 @@ export function apply(ctx: Context, config: Config) {
             }, {
                 primary: 'id'
             });
-            ctx.database.extend('bangumiOnair', {
+            ctx.database.extend(onairDatabase, {
                 id: 'string',
                 url: 'string',
                 type: 'unsigned',
@@ -216,12 +218,12 @@ export function apply(ctx: Context, config: Config) {
                 });
             }
             // save bangumi items to database
-            await ctx.database.upsert('bangumi', bangumiWithId);
+            await ctx.database.upsert(archiveDatabase, bangumiWithId);
 
             // get calendar data from API
             const calendarData = await getCalendarData(session);
             // save calendar data to database
-            await ctx.database.upsert('bangumiOnair', calendarData);
+            await ctx.database.upsert(onairDatabase, calendarData);
 
             session.sendQueued(session.text('.updated'));
         });
@@ -232,7 +234,10 @@ export function apply(ctx: Context, config: Config) {
         .action(async ({ session }) => {
             // clear bangumi database
             try {
-                await ctx.database.drop('bangumi');
+                await Promise.all([
+                    ctx.database.drop(archiveDatabase),
+                    ctx.database.drop(onairDatabase)
+                ]);
             }
             catch (error) {
                 session.sendQueued(session.text('.failed'));
