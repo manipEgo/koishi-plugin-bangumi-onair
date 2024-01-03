@@ -199,33 +199,42 @@ export function apply(ctx: Context, config: Config) {
             });
             session.sendQueued(session.text('.updating'));
 
-            // get bangumi data from CDN
-            const bangumiData = await getCDNData(session);
-            // sort by begin time -> title
-            bangumiData.items.sort((a, b) => {
-                if (a.begin === b.begin) {
-                    return a.title > b.title ? 1 : -1;
+            Promise.all([
+                // get bangumi data from CDN
+                async () => {
+                    const bangumiData = await getCDNData(session);
+                    // sort by begin time -> title
+                    bangumiData.items.sort((a, b) => {
+                        if (a.begin === b.begin) {
+                            return a.title > b.title ? 1 : -1;
+                        }
+                        return a.begin > b.begin ? 1 : -1;
+                    });
+                    // insert id
+                    let id = 0;
+                    let bangumiWithId = [];
+                    for (const bangumi of bangumiData.items) {
+                        bangumiWithId.push({
+                            id: id++,
+                            ...bangumi
+                        });
+                    }
+                    // save bangumi items to database
+                    await ctx.database.upsert(archiveDatabase, bangumiWithId);
+                },
+
+                // get calendar data from API
+                async () => {
+                    const calendarData = await getCalendarData(session);
+                    // save calendar data to database
+                    await ctx.database.upsert(onairDatabase, calendarData);
                 }
-                return a.begin > b.begin ? 1 : -1;
+            ]).catch((error) => {
+                console.error(error);
+                session.sendQueued(session.text('.failed'));
+            }).then(() => {
+                session.sendQueued(session.text('.updated'));
             });
-            // insert id
-            let id = 0;
-            let bangumiWithId = [];
-            for (const bangumi of bangumiData.items) {
-                bangumiWithId.push({
-                    id: id++,
-                    ...bangumi
-                });
-            }
-            // save bangumi items to database
-            await ctx.database.upsert(archiveDatabase, bangumiWithId);
-
-            // get calendar data from API
-            const calendarData = await getCalendarData(session);
-            // save calendar data to database
-            await ctx.database.upsert(onairDatabase, calendarData);
-
-            session.sendQueued(session.text('.updated'));
         });
 
     // clear bangumi database
