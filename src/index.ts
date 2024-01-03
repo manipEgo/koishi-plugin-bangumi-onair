@@ -3,7 +3,7 @@ import { Context, Schema } from 'koishi'
 import moment from 'moment';
 
 import { getSeasonBangumiData, getTodayBangumiData } from './utils/data-get';
-import { getCDNData } from './utils/data-manip';
+import { getCDNData, getCalendarData } from './utils/data-manip';
 
 
 declare module 'koishi' {
@@ -177,8 +177,27 @@ export function apply(ctx: Context, config: Config) {
             }, {
                 primary: 'id'
             });
-            // get bangumi data from CDN
+            ctx.database.extend('bangumiOnair', {
+                id: 'string',
+                url: 'string',
+                type: 'unsigned',
+                name: 'string',
+                name_cn: 'string',
+                summary: 'string',
+                air_date: 'string',
+                air_weekday: 'json',
+                images: 'json',
+                eps: 'unsigned',
+                eps_count: 'unsigned',
+                rating: 'json',
+                rank: 'unsigned',
+                collection: 'json'
+            }, {
+                primary: 'id'
+            });
             session.sendQueued(session.text('.updating'));
+
+            // get bangumi data from CDN
             const bangumiData = await getCDNData(session);
             // sort by begin time -> title
             bangumiData.items.sort((a, b) => {
@@ -198,7 +217,13 @@ export function apply(ctx: Context, config: Config) {
             }
             // save bangumi items to database
             await ctx.database.upsert('bangumi', bangumiWithId);
-            // TODO: localization
+
+            // get calendar data from API
+            const calendarData = await getCalendarData(session);
+            console.log(calendarData[0])
+            // save calendar data to database
+            await ctx.database.upsert('bangumiOnair', calendarData);
+
             session.sendQueued(session.text('.updated'));
         });
 
