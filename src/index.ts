@@ -2,7 +2,7 @@ import { Context, Schema } from 'koishi'
 
 import moment from 'moment';
 
-import { getSeasonBangumiData, getTodayBangumiData } from './utils/data-calc';
+import { getSeasonBangumiData, getTodayBangumiData, checkDatabasesExist } from './utils/data-calc';
 import { getCDNData, getCalendarData } from './utils/data-dl';
 
 
@@ -47,10 +47,7 @@ export function apply(ctx: Context, config: Config) {
         .alias('bd')
         .action(async ({ session }, offset) => {
             // check if database exists
-            try {
-                await ctx.database.get(archiveDatabase, {});
-            }
-            catch (error) {
+            if (await checkDatabasesExist(ctx)) {
                 await session.execute('onair.update');
             }
 
@@ -93,10 +90,7 @@ export function apply(ctx: Context, config: Config) {
         .alias('bs')
         .action(async ({ session }, offset) => {
             // check if database exists
-            try {
-                await ctx.database.get(archiveDatabase, {});
-            }
-            catch (error) {
+            if (await checkDatabasesExist(ctx)) {
                 await session.execute('onair.update');
             }
 
@@ -199,9 +193,9 @@ export function apply(ctx: Context, config: Config) {
             });
             session.sendQueued(session.text('.updating'));
 
-            Promise.all([
+            await Promise.allSettled([
                 // get bangumi data from CDN
-                async () => {
+                new Promise<void>(async (resolve, reject) => {
                     const bangumiData = await getCDNData(session);
                     // sort by begin time -> title
                     bangumiData.items.sort((a, b) => {
@@ -221,20 +215,23 @@ export function apply(ctx: Context, config: Config) {
                     }
                     // save bangumi items to database
                     await ctx.database.upsert(archiveDatabase, bangumiWithId);
-                },
+                    resolve();
+                }),
 
                 // get calendar data from API
-                async () => {
+                new Promise<void>(async (resolve, reject) => {
                     const calendarData = await getCalendarData(session);
                     // save calendar data to database
                     await ctx.database.upsert(onairDatabase, calendarData);
-                }
+                    resolve();
+                })
             ]).catch((error) => {
                 console.error(error);
                 session.sendQueued(session.text('.failed'));
+                return Promise.reject();
             }).then(() => {
                 session.sendQueued(session.text('.updated'));
-            });
+            }, () => {});
         });
 
     // clear bangumi database
@@ -242,16 +239,15 @@ export function apply(ctx: Context, config: Config) {
         .alias('bdrop')
         .action(async ({ session }) => {
             // clear bangumi database
-            try {
-                await Promise.all([
-                    ctx.database.drop(archiveDatabase),
-                    ctx.database.drop(onairDatabase)
-                ]);
-            }
-            catch (error) {
+            await Promise.all([
+                ctx.database.drop(archiveDatabase),
+                ctx.database.drop(onairDatabase)
+            ]).catch((error) => {
+                console.error(error);
                 session.sendQueued(session.text('.failed'));
-                return;
-            }
-            session.sendQueued(session.text('.dropped'));
+                return Promise.reject();
+            }).then(() => {
+                session.sendQueued(session.text('.dropped'));
+            }, () => {});
         });
 }
