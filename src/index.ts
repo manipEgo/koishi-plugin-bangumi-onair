@@ -17,8 +17,6 @@ declare module 'koishi' {
         "bangumi.onair": BangumiOnair
     }
 }
-archiveDatabase = "bangumi.archive";
-onairDatabase = "bangumi.onair";
 
 export interface Config {
     excludeOld: boolean;
@@ -250,7 +248,7 @@ export function apply(ctx: Context, config: Config) {
     ctx.command('onair.update')
         .alias('bupdate')
         .action(async ({ session }) => {
-            ctx.database.extend(archiveDatabase, {
+            ctx.database.extend("bangumi.archive", {
                 id: 'unsigned',
                 title: 'string',
                 titleTranslate: 'json',
@@ -265,7 +263,7 @@ export function apply(ctx: Context, config: Config) {
             }, {
                 primary: 'id'
             });
-            ctx.database.extend(onairDatabase, {
+            ctx.database.extend("bangumi.onair", {
                 id: 'unsigned',
                 url: 'string',
                 type: 'unsigned',
@@ -306,7 +304,7 @@ export function apply(ctx: Context, config: Config) {
                         });
                     }
                     // save bangumi items to database
-                    await ctx.database.upsert(archiveDatabase, bangumiWithId);
+                    await ctx.database.upsert("bangumi.archive", bangumiWithId);
                     resolve();
                 }),
 
@@ -314,7 +312,7 @@ export function apply(ctx: Context, config: Config) {
                 new Promise<void>(async (resolve, reject) => {
                     const calendarData = await getCalendarData(ctx, session);
                     // save calendar data to database
-                    await ctx.database.upsert(onairDatabase, calendarData);
+                    await ctx.database.upsert("bangumi.onair", calendarData);
                     resolve();
                 })
             ]).catch((error) => {
@@ -332,8 +330,8 @@ export function apply(ctx: Context, config: Config) {
         .action(async ({ session }) => {
             // clear bangumi database
             await Promise.all([
-                ctx.database.drop(archiveDatabase),
-                ctx.database.drop(onairDatabase)
+                ctx.database.drop("bangumi.archive"),
+                ctx.database.drop("bangumi.onair")
             ]).catch((error) => {
                 console.error(error);
                 session.sendQueued(session.text('.failed'));

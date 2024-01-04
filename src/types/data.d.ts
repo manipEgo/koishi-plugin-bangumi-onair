@@ -300,7 +300,7 @@ declare type Collection = {
  * bangumi-API 数据库表格
  */
 declare interface BangumiOnair {
-    id: string,
+    id: number,
     url: string,
     type: number,
     name: string,
@@ -315,10 +315,3 @@ declare interface BangumiOnair {
     rank: number,
     collection: Collection
 }
-
-
-// ========== global fields ========== //
-
-declare var archiveDatabase;
-
-declare var onairDatabase;

@@ -29,11 +29,7 @@ const getCDNData = async (ctx, session): Promise<RawJson> => {
 
 const getCalendarData = async (ctx, session): Promise<BangumiOnair[]> => {
     try {
-        const calendarData = await ctx.http.get(calendarAPI, {
-            headers: {
-                "User-Agent": userAgent
-            }
-        });
+        const calendarData = await ctx.http.get(calendarAPI);
         const bangumiOnair = calendarData.map((b) => b.items);
         return bangumiOnair.reduce((accumulator, value) => accumulator.concat(value), []) as BangumiOnair[];
     }
