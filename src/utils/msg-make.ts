@@ -1,5 +1,7 @@
-import { Config } from "..";
 import moment from 'moment';
+
+import { Config } from "..";
+import { getSeason } from "./data-calc";
 
 const truncateLine = (message: string, maxLength: number): string => {
     if (maxLength === 0) {
@@ -18,7 +20,7 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
     });
     // convert to list of string to display
     const bangumiStringList = bangumi.map((b) => {
-        const prefix = moment(b.begin).format("HH:mm") + "   ";
+        const prefix = moment(b.begin).format(config.format.dayFormat.prefix);
         // display Chinese title
         if (config.basic.showChineseTitle) {
             return prefix +
@@ -38,18 +40,20 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
         }
         timePointer++;
     }
-    const timeMarker = "> --- " + timeNow.format('HH:mm YY/MM/DD') + " ---\n";
-    return bangumiStringList.slice(0, timePointer).join('\n') + '\n' + timeMarker + bangumiStringList.slice(timePointer).join('\n');
+    return timeNow.format(config.format.dayFormat.header) + '\n' +
+        bangumiStringList.slice(0, timePointer).join('\n') + '\n' +
+        timeNow.format(config.format.dayFormat.clock) + '\n' +
+        bangumiStringList.slice(timePointer).join('\n');
 }
 
 const makeCdayMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], config: Config): string => {
     // convert to list of strings
     const bangumiStringList = bangumi.map((b) => {
-        return truncateLine(config.basic.showChineseTitle ?
-        (b.name_cn === '' ? b.name : b.name_cn) : b.name, config.basic.maxTitleLength);
+        return moment(b.air_date).format(config.format.cdayFormat.prefix) + truncateLine(config.basic.showChineseTitle ?
+            (b.name_cn === '' ? b.name : b.name_cn) : b.name, config.basic.maxTitleLength);
     });
-    const weekdayMarker = "--- " + timeNow.format("dddd YY/MM/DD") + " ---\n";
-    return weekdayMarker + bangumiStringList.join('\n');
+    return timeNow.format(config.format.cdayFormat.header) + '\n' +
+        bangumiStringList.join('\n');
 }
 
 const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config): string[] => {
@@ -65,7 +69,7 @@ const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Conf
     });
     // convert to list of string to display
     const bangumiStringList = bangumi.map((b) => {
-        const prefix = moment(b.begin).format("HH:mm MM-DD") + "   ";
+        const prefix = moment(b.begin).format(config.format.seasonFormat.prefix);
         // display Chinese title
         if (config.basic.showChineseTitle) {
             return prefix +
@@ -91,21 +95,29 @@ const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Conf
     }
 
     const bangumiStrings = [];
+    const timeSeason = getSeason(timeNow);
     // separate season bangumi message by weekdays
-    const seasonMarker = `> --- ${timeNow.format('YY/MM')} ---`;
+    const seasonHeader = timeNow.format(config.format.seasonFormat.header);
     if (config.basic.separateWeekdays) {
-        bangumiStrings.push(seasonMarker);
+        bangumiStrings.push(seasonHeader);
         for (let i = 0; i < 7; i++) {
-            // TODO: beter formatting
-            bangumiStrings.push(`--- ${moment.weekdays(i + 1)} ---\n` +
+            let timeWeekday = timeSeason.clone();
+            while (timeWeekday.isoWeekday() !== i + 1) {
+                timeWeekday.add(1, 'day');
+            }
+            bangumiStrings.push(timeWeekday.format(config.format.seasonFormat.weekday) + '\n' +
                 bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n');
         }
     }
     // display season bangumi message in one message
     else {
-        let bangumiString = seasonMarker + '\n';
+        let bangumiString = seasonHeader + '\n';
         for (let i = 0; i < 7; i++) {
-            bangumiString += `--- ${moment.weekdays(i + 1)} ---\n`;
+            let timeWeekday = timeSeason.clone();
+            while (timeWeekday.isoWeekday() !== i + 1) {
+                timeWeekday.add(1, 'day');
+            }
+            bangumiString += timeWeekday.format(config.format.seasonFormat.weekday) + '\n';
             bangumiString += bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n';
         }
         bangumiStrings.push(bangumiString);
@@ -123,12 +135,12 @@ const makeCseasonMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], con
     });
     //convert to list of strings
     const bangumiStringList = bangumi.map((b) => {
-        const formatDate = moment(b.air_date).format("MM-DD");
-        const prefix = formatDate === "Invalid date" ? "00-00" : formatDate;
+        const formatDate = moment(b.air_date).format(config.format.cseasonFormat.prefix);
+        const prefix = formatDate.match("Invalid date") != null ? config.format.cseasonFormat.prefix : formatDate;
         if (config.basic.showChineseTitle) {
-            return `${prefix}   ${truncateLine(b.name_cn == "" ? b.name : b.name_cn ?? b.name, config.basic.maxTitleLength)}`;
+            return prefix + truncateLine(b.name_cn == "" ? b.name : b.name_cn ?? b.name, config.basic.maxTitleLength);
         }
-        return `${prefix}   ${truncateLine(b.name, config.basic.maxTitleLength)}`;
+        return prefix + truncateLine(b.name, config.basic.maxTitleLength);
     });
 
     // mark weekdays between bangumi
@@ -145,21 +157,29 @@ const makeCseasonMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], con
     }
 
     const bangumiStrings = [];
+    const timeSeason = getSeason(timeNow);
     // separate season bangumi message by weekdays
-    const seasonMarker = `> --- ${timeNow.format('YY/MM')} ---`;
+    const seasonHeader = timeNow.format(config.format.cseasonFormat.header);
     if (config.basic.separateWeekdays) {
-        bangumiStrings.push(seasonMarker);
+        bangumiStrings.push(seasonHeader);
         for (let i = 0; i < 7; i++) {
-            // TODO: beter formatting
-            bangumiStrings.push(`--- ${moment.weekdays(i + 1)} ---\n` +
+            let timeWeekday = timeSeason.clone();
+            while (timeWeekday.isoWeekday() !== i + 1) {
+                timeWeekday.add(1, 'day');
+            }
+            bangumiStrings.push(timeWeekday.format(config.format.cseasonFormat.weekday) + '\n' +
                 bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n');
         }
     }
     // display season bangumi message in one message
     else {
-        let bangumiString = seasonMarker + '\n';
+        let bangumiString = seasonHeader + '\n';
         for (let i = 0; i < 7; i++) {
-            bangumiString += `--- ${moment.weekdays(i + 1)} ---\n`;
+            let timeWeekday = timeSeason.clone();
+            while (timeWeekday.isoWeekday() !== i + 1) {
+                timeWeekday.add(1, 'day');
+            }
+            bangumiString += timeWeekday.format(config.format.cseasonFormat.weekday) + '\n';
             bangumiString += bangumiStringList.slice(weekdayPointer[i], weekdayPointer[i + 1]).join('\n') + '\n';
         }
         bangumiStrings.push(bangumiString);

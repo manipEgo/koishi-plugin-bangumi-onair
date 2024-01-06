@@ -180,4 +180,4 @@ const getCalendarSeasonData = async (timeNow: moment.Moment, ctx: Context, confi
 }
 
 
-export { getSeasonBangumiData, getTodayBangumiData, getCalendarSeasonData, getCalendarDayData, checkDatabasesExist }
+export { getSeason, getSeasonBangumiData, getTodayBangumiData, getCalendarSeasonData, getCalendarDayData, checkDatabasesExist }

@@ -1,4 +1,4 @@
-import { Schema } from 'koishi'
+import { Schema } from "koishi"
 
 namespace BasicConfig {
     export interface Config {
@@ -14,7 +14,7 @@ namespace FormatConfig {
         dayFormat: {
             header: string;
             prefix: string;
-            marker: string;
+            clock: string;
         };
         seasonFormat: {
             header: string;
@@ -51,23 +51,23 @@ const basicConfig: Schema<BasicConfig.Config> = Schema.object({
 
 const formatConfig: Schema<FormatConfig.Config> = Schema.object({
     dayFormat: Schema.object({
-        header: Schema.string().default('今日番组表'),
-        prefix: Schema.string().default(''),
-        marker: Schema.string().default('★'),
+        header: Schema.string().default("=== dddd YY/MM/DD ==="),
+        prefix: Schema.string().default("HH:mm   "),
+        clock: Schema.string().default("+ --- HH:mm --- +"),
     }).collapse(),
     seasonFormat: Schema.object({
-        header: Schema.string().default('本季番组表'),
-        prefix: Schema.string().default(''),
-        weekday: Schema.string().default(''),
+        header: Schema.string().default("=== YY/MM ==="),
+        prefix: Schema.string().default("HH:mm MM-DD   "),
+        weekday: Schema.string().default("+ --- dddd --- +"),
     }).collapse(),
     cdayFormat: Schema.object({
-        header: Schema.string().default('今日番组表'),
-        prefix: Schema.string().default(''),
+        header: Schema.string().default("=== dddd YY/MM/DD ==="),
+        prefix: Schema.string().default("MM-DD   "),
     }).collapse(),
     cseasonFormat: Schema.object({
-        header: Schema.string().default('本季番组表'),
-        prefix: Schema.string().default(''),
-        weekday: Schema.string().default(''),
+        header: Schema.string().default("=== YY/MM ==="),
+        prefix: Schema.string().default("MM-DD   "),
+        weekday: Schema.string().default("+ --- dddd --- +"),
     }).collapse(),
 });
 
@@ -75,6 +75,6 @@ export const Config: Schema<Config> = Schema.object({
     basic: basicConfig,
     format: formatConfig,
 }).i18n({
-    'en-US': require('./locales/config_en-US.yml'),
-    'zh-CN': require('./locales/config_zh-CN.yml'),
+    "en-US": require("./locales/config_en-US.yml"),
+    "zh-CN": require("./locales/config_zh-CN.yml"),
 })
