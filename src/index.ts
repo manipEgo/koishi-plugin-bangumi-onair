@@ -23,6 +23,7 @@ export interface Config {
     excludeOld: boolean;
     showChineseTitle: boolean;
     separateWeekdays: boolean;
+    maxTitleLength: number;
 }
 
 export const name = 'bangumi-onair'
@@ -36,6 +37,8 @@ export const Config: Schema<Config> = Schema.object({
     showChineseTitle: Schema.boolean().default(true),
     // separate season bangumi message by weekdays
     separateWeekdays: Schema.boolean().default(true),
+    // max length of title
+    maxTitleLength: Schema.number().default(0),
 }).i18n({
     'en-US': require('./locales/en-US')._config,
     'zh-CN': require('./locales/zh-CN')._config,

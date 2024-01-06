@@ -27,3 +27,4 @@ _config:
   excludeOld: exclude old bangumi
   showChineseTitle: show Chinese title if available
   separateWeekdays: separate onair.season message by weekdays, to avoid long message constraint (plugin "imagify" could also help)
+  maxTitleLength: max title length, 0 for no limit
