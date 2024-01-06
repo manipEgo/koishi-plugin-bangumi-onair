@@ -1,6 +1,16 @@
 import { Config } from "..";
 import moment from 'moment';
 
+const truncateLine = (message: string, maxLength: number): string => {
+    if (maxLength === 0) {
+        return message;
+    }
+    if (message.length > maxLength) {
+        return message.slice(0, maxLength) + '...';
+    }
+    return message;
+}
+
 const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config): string => {
     // sort by begin time
     bangumi.sort((a, b) => {
@@ -12,11 +22,11 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
         // display Chinese title
         if (config.showChineseTitle) {
             return prefix +
-                (b.titleTranslate['zh-Hans'] == undefined ?
-                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title)
+                truncateLine(b.titleTranslate['zh-Hans'] == undefined ?
+                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title, config.maxTitleLength);
         }
         else {
-            return prefix + b.title
+            return prefix + truncateLine(b.title, config.maxTitleLength);
         }
     });
 
@@ -35,8 +45,8 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
 const makeCdayMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], config: Config): string => {
     // convert to list of strings
     const bangumiStringList = bangumi.map((b) => {
-        return config.showChineseTitle ?
-        (b.name_cn === '' ? b.name : b.name_cn) : b.name;
+        return truncateLine(config.showChineseTitle ?
+        (b.name_cn === '' ? b.name : b.name_cn) : b.name, config.maxTitleLength);
     });
     const weekdayMarker = "--- " + timeNow.format("dddd YY/MM/DD") + " ---\n";
     return weekdayMarker + bangumiStringList.join('\n');
@@ -59,11 +69,11 @@ const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Conf
         // display Chinese title
         if (config.showChineseTitle) {
             return prefix +
-                (b.titleTranslate['zh-Hans'] == undefined ?
-                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title)
+                truncateLine(b.titleTranslate['zh-Hans'] == undefined ?
+                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title, config.maxTitleLength);
         }
         else {
-            return prefix + b.title
+            return prefix + truncateLine(b.title, config.maxTitleLength);
         }
     });
 
@@ -116,9 +126,9 @@ const makeCseasonMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], con
         const formatDate = moment(b.air_date).format("MM-DD");
         const prefix = formatDate === "Invalid date" ? "00-00" : formatDate;
         if (config.showChineseTitle) {
-            return `${prefix}   ${b.name_cn == "" ? b.name : b.name_cn ?? b.name}`;
+            return `${prefix}   ${truncateLine(b.name_cn == "" ? b.name : b.name_cn ?? b.name, config.maxTitleLength)}`;
         }
-        return `${prefix}   ${b.name}`;
+        return `${prefix}   ${truncateLine(b.name, config.maxTitleLength)}`;
     });
 
     // mark weekdays between bangumi
