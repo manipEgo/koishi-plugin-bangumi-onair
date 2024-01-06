@@ -20,13 +20,13 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
     const bangumiStringList = bangumi.map((b) => {
         const prefix = moment(b.begin).format("HH:mm") + "   ";
         // display Chinese title
-        if (config.showChineseTitle) {
+        if (config.basic.showChineseTitle) {
             return prefix +
                 truncateLine(b.titleTranslate['zh-Hans'] == undefined ?
-                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title, config.maxTitleLength);
+                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title, config.basic.maxTitleLength);
         }
         else {
-            return prefix + truncateLine(b.title, config.maxTitleLength);
+            return prefix + truncateLine(b.title, config.basic.maxTitleLength);
         }
     });
 
@@ -45,8 +45,8 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
 const makeCdayMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], config: Config): string => {
     // convert to list of strings
     const bangumiStringList = bangumi.map((b) => {
-        return truncateLine(config.showChineseTitle ?
-        (b.name_cn === '' ? b.name : b.name_cn) : b.name, config.maxTitleLength);
+        return truncateLine(config.basic.showChineseTitle ?
+        (b.name_cn === '' ? b.name : b.name_cn) : b.name, config.basic.maxTitleLength);
     });
     const weekdayMarker = "--- " + timeNow.format("dddd YY/MM/DD") + " ---\n";
     return weekdayMarker + bangumiStringList.join('\n');
@@ -67,13 +67,13 @@ const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Conf
     const bangumiStringList = bangumi.map((b) => {
         const prefix = moment(b.begin).format("HH:mm MM-DD") + "   ";
         // display Chinese title
-        if (config.showChineseTitle) {
+        if (config.basic.showChineseTitle) {
             return prefix +
                 truncateLine(b.titleTranslate['zh-Hans'] == undefined ?
-                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title, config.maxTitleLength);
+                    b.title : b.titleTranslate['zh-Hans'][0] ?? b.title, config.basic.maxTitleLength);
         }
         else {
-            return prefix + truncateLine(b.title, config.maxTitleLength);
+            return prefix + truncateLine(b.title, config.basic.maxTitleLength);
         }
     });
 
@@ -93,7 +93,7 @@ const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Conf
     const bangumiStrings = [];
     // separate season bangumi message by weekdays
     const seasonMarker = `> --- ${timeNow.format('YY/MM')} ---`;
-    if (config.separateWeekdays) {
+    if (config.basic.separateWeekdays) {
         bangumiStrings.push(seasonMarker);
         for (let i = 0; i < 7; i++) {
             // TODO: beter formatting
@@ -125,10 +125,10 @@ const makeCseasonMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], con
     const bangumiStringList = bangumi.map((b) => {
         const formatDate = moment(b.air_date).format("MM-DD");
         const prefix = formatDate === "Invalid date" ? "00-00" : formatDate;
-        if (config.showChineseTitle) {
-            return `${prefix}   ${truncateLine(b.name_cn == "" ? b.name : b.name_cn ?? b.name, config.maxTitleLength)}`;
+        if (config.basic.showChineseTitle) {
+            return `${prefix}   ${truncateLine(b.name_cn == "" ? b.name : b.name_cn ?? b.name, config.basic.maxTitleLength)}`;
         }
-        return `${prefix}   ${truncateLine(b.name, config.maxTitleLength)}`;
+        return `${prefix}   ${truncateLine(b.name, config.basic.maxTitleLength)}`;
     });
 
     // mark weekdays between bangumi
@@ -147,7 +147,7 @@ const makeCseasonMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], con
     const bangumiStrings = [];
     // separate season bangumi message by weekdays
     const seasonMarker = `> --- ${timeNow.format('YY/MM')} ---`;
-    if (config.separateWeekdays) {
+    if (config.basic.separateWeekdays) {
         bangumiStrings.push(seasonMarker);
         for (let i = 0; i < 7; i++) {
             // TODO: beter formatting

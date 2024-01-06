@@ -35,7 +35,7 @@ const getSeasonBangumiData = async (timeNow: moment.Moment, ctx: Context, config
     let bangumiData: Item[] = [];
     // exclude old bangumi
     // begin time falls in the season
-    if (config.excludeOld) {
+    if (config.basic.excludeOld) {
         bangumiData = await ctx.database.get("bangumi.archive", {
             $and: [
                 { begin: { $gte: season.format("YYYY-MM-DD") } },
@@ -145,7 +145,7 @@ const checkDatabasesExist = async (ctx: Context): Promise<boolean> => {
  */
 const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<BangumiOnair[]> => {
     const weekday = timeNow.isoWeekday();
-    if (config.excludeOld) {
+    if (config.basic.excludeOld) {
         return await ctx.database.get("bangumi.onair", {
             $and: [
                 { air_weekday: weekday },
@@ -171,7 +171,7 @@ const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context, config: 
  * @returns bangumi-API data of the season
  */
 const getCalendarSeasonData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<BangumiOnair[]> => {
-    if (config.excludeOld) {
+    if (config.basic.excludeOld) {
         return await ctx.database.get("bangumi.onair", {}) as BangumiOnair[];
     }
     return await ctx.database.get("bangumi.onair", {
