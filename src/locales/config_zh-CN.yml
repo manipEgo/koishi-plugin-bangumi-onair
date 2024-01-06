@@ -3,3 +3,25 @@ basic:
   showChineseTitle: 优先显示中文标题
   separateWeekdays: 按星期分割季度动画消息，避免消息过长无法发送（也可考虑插件“imagify”）
   maxTitleLength: 标题最大长度，0 为不限制
+
+format:
+  $description: 格式设置
+  dayFormat:
+    $description: onair.day 格式
+    header: 标题行，给定日期时间将参与格式化
+    prefix: 行前缀，动画开播时间将参与格式化
+    clock: 时钟行，给定日期时间将参与格式化
+  seasonFormat:
+    $description: onair.season 格式
+    header: 标题行，给定日期时间将参与格式化
+    prefix: 行前缀，动画开播时间将参与格式化
+    weekday: 星期行，季度首个星期将参与格式化
+  cdayFormat:
+    $description: onair.cday 格式
+    header: 标题行，给定日期时间将参与格式化
+    prefix: 行前缀，动画开播日期将参与格式化
+  cseasonFormat:
+    $description: onair.cseason 格式
+    header: 标题行，当前日期时间将参与格式化
+    prefix: 行前缀，动画开播日期将参与格式化
+    weekday: 星期行，季度首个星期将参与格式化

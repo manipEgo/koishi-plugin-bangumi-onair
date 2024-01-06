@@ -3,3 +3,25 @@ basic:
   showChineseTitle: show Chinese title if available
   separateWeekdays: separate onair.season message by weekdays, to avoid long message constraint (plugin "imagify" could also help)
   maxTitleLength: max title length, 0 for no limit
+
+format:
+  $description: format settings
+  dayFormat:
+    $description: onair.day format
+    header: title line, given date time will be formatted
+    prefix: line prefix, bangumi onair time will be formatted
+    clock: clock line, given date time will be formatted
+  seasonFormat:
+    $description: onair.season format
+    header: title line, given date time will be formatted
+    prefix: line prefix, bangumi onair time will be formatted
+    weekday: weekday line, first weekday of the season will be formatted
+  cdayFormat:
+    $description: onair.cday format
+    header: title line, given date time will be formatted
+    prefix: line prefix, bangumi onair date will be formatted
+  cseasonFormat:
+    $description: onair.cseason format
+    header: title line, current date time will be formatted
+    prefix: line prefix, bangumi onair date will be formatted
+    weekday: weekday line, first weekday of the season will be formatted
