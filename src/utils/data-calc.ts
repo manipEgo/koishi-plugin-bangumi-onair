@@ -25,7 +25,7 @@ const getSeason = (timeNow: moment.Moment): moment.Moment => {
 
 
 /**
- * Get the bangumi data of the season
+ * Get the bangumi data of the season (bangumi-data)
  * @param timeNow current time
  * @returns bangumi data of the season
  */
@@ -83,9 +83,9 @@ const checkPeriodHitDay = (timeNow: moment.Moment, begin: moment.Moment, period:
 
 
 /**
- * Get the bangumi data of today
+ * Get the bangumi data of the day (bangumi-data)
  * @param timeNow current time
- * @returns bangumi data of today
+ * @returns bangumi data of the day
  */
 const getTodayBangumiData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<Item[]> => {
     // TODO: bangumi API method?
@@ -114,6 +114,11 @@ const getTodayBangumiData = async (timeNow: moment.Moment, ctx: Context, config:
 }
 
 
+/**
+ * Check if the databases exist
+ * @param ctx context
+ * @returns whether the databases exist
+ */
 const checkDatabasesExist = async (ctx: Context): Promise<boolean> => {
     if (await Promise.all([
         ctx.database.get("bangumi.archive", {}),
@@ -130,6 +135,14 @@ const checkDatabasesExist = async (ctx: Context): Promise<boolean> => {
     return false;
 }
 
+
+/**
+ * Get the bangumi-API data of the day (bangumi-API)
+ * @param timeNow current time
+ * @param ctx context
+ * @param config config
+ * @returns bangumi-API data of the day
+ */
 const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<BangumiOnair[]> => {
     const weekday = timeNow.isoWeekday();
     if (config.excludeOld) {
@@ -149,6 +162,14 @@ const getCalendarDayData = async (timeNow: moment.Moment, ctx: Context, config: 
     }) as BangumiOnair[];
 }
 
+
+/**
+ * Get the bangumi data of the season (bangumi-API)
+ * @param timeNow current time
+ * @param ctx context
+ * @param config config
+ * @returns bangumi-API data of the season
+ */
 const getCalendarSeasonData = async (timeNow: moment.Moment, ctx: Context, config: Config): Promise<BangumiOnair[]> => {
     if (config.excludeOld) {
         return await ctx.database.get("bangumi.onair", {}) as BangumiOnair[];
