@@ -1,4 +1,5 @@
 import { Context, Schema } from 'koishi'
+import { } from '@koishijs/plugin-help'
 
 import moment from 'moment';
 
@@ -325,7 +326,7 @@ export function apply(ctx: Context, config: Config) {
         });
 
     // clear bangumi database
-    ctx.command('onair.drop')
+    ctx.command('onair.drop', { hidden: true })
         .alias('bdrop')
         .action(async ({ session }) => {
             // clear bangumi database
