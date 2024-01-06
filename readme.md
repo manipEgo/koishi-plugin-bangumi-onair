@@ -365,7 +365,8 @@ Will try to drop the database. Not called under normal condition.
  - [x] 设置：显示中文标题 -> `showChineseTitle`
  - [x] 设置：按星期分割显示季度动画，避免消息过长 -> `separateWeekdays`
  - [x] 基础：使用数据库减少请求
- - [x] 基础：使用 *bangumi-API-Calendar* 获取准确当日数据
+ - [x] 基础：使用 *bangumi-data* 获取数据
+ - [x] 基础：使用 *bangumi-API-Calendar* 获取数据
  - [x] 语言：中文设置和提示
  - [ ] 设置：限宽
  - [ ] 设置：限长
