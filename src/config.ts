@@ -75,6 +75,6 @@ export const Config: Schema<Config> = Schema.object({
     basic: basicConfig,
     format: formatConfig,
 }).i18n({
-    "en-US": require("./locales/config_en-US.yml"),
-    "zh-CN": require("./locales/config_zh-CN.yml"),
+    "en-US": require("./locales/config_en-US"),
+    "zh-CN": require("./locales/config_zh-CN"),
 })
