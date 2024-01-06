@@ -1,4 +1,4 @@
-import { Context, Schema } from 'koishi'
+import { Context } from 'koishi'
 import { } from '@koishijs/plugin-help'
 
 import moment from 'moment';
@@ -17,6 +17,7 @@ import {
     makeSeasonMessage,
     makeCseasonMessage
 } from './utils/msg-make';
+import { Config } from './config';
 
 
 declare module 'koishi' {
@@ -26,30 +27,11 @@ declare module 'koishi' {
     }
 }
 
-export interface Config {
-    excludeOld: boolean;
-    showChineseTitle: boolean;
-    separateWeekdays: boolean;
-    maxTitleLength: number;
-}
+export * from './config';
 
 export const name = 'bangumi-onair'
 
 export const inject = ['database']
-
-export const Config: Schema<Config> = Schema.object({
-    // exclude bangumi of seasons before this season
-    excludeOld: Schema.boolean().default(false),
-    // display Chinese title
-    showChineseTitle: Schema.boolean().default(true),
-    // separate season bangumi message by weekdays
-    separateWeekdays: Schema.boolean().default(true),
-    // max length of title
-    maxTitleLength: Schema.number().default(0),
-}).i18n({
-    'en-US': require('./locales/en-US')._config,
-    'zh-CN': require('./locales/zh-CN')._config,
-})
 
 
 export function apply(ctx: Context, config: Config) {

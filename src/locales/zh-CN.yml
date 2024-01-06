@@ -22,9 +22,3 @@ commands:
     messages:
       failed: "删除失败"
       dropped: "已删除"
-
-_config:
-  excludeOld: 排除旧番
-  showChineseTitle: 优先显示中文标题
-  separateWeekdays: 按星期分割季度动画消息，避免消息过长无法发送（也可考虑插件“imagify”）
-  maxTitleLength: 标题最大长度，0 为不限制
