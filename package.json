@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-bangumi-onair",
   "description": "Query bangumi-data & display bangumi onair in text",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
