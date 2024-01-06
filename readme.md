@@ -369,9 +369,9 @@ Will try to drop the database. Not called under normal condition.
  - [x] 基础：使用 *bangumi-API-Calendar* 获取数据
  - [x] 语言：中文设置和提示
  - [ ] 设置：限宽
- - [ ] 设置：限长
  - [ ] 设置：今日动画隐藏开播时间
  - [ ] 设置：季度动画隐藏开播时间/日期
+ - [ ] **功能：查询指定时间戳**
  - [ ] 功能：订阅动画
  - [ ] 功能：仅显示订阅
  - [ ] 功能：订阅开播提醒
