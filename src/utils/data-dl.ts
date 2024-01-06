@@ -22,7 +22,7 @@ const getCDNData = async (ctx, session): Promise<RawJson> => {
     catch (error) {
         console.error(error);
         // TODO: localization
-        session.sendQueued(`Failed to get bangumi data from CDN.`);
+        session.sendQueued(session.text(".cdnFailed"));
         return;
     }
 }
@@ -35,7 +35,7 @@ const getCalendarData = async (ctx, session): Promise<BangumiOnair[]> => {
     }
     catch (error) {
         console.error(error);
-        session.sendQueued(`Failed to get bangumi data from API.`);
+        session.sendQueued(session.text(".apiFailed"));
     }
 }
 

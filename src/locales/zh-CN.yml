@@ -2,15 +2,21 @@ commands:
   onair:
     description: "动画放送信息"
   onair.day:
-    description: "查看今日动画"
+    description: "今日动画(bangumi-data)"
+  onair.cday:
+    description: "今日动画(bangumi-API)"
   onair.season:
-    description: "查看本季动画"
+    description: "本季动画(bangumi-data)"
+  onair.cseason:
+    description: "本季动画(bangumi-API)"
   onair.update:
     description: "更新动画数据库"
     messages:
       updating: "正在更新动画数据库……"
       updated: "动画数据库已更新"
       failed: "更新失败"
+      cdnFailed: "CDN 数据获取失败"
+      apiFailed: "API 数据获取失败"
   onair.drop:
     description: "删除动画数据库"
     messages:
