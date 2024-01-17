@@ -18,7 +18,12 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
     bangumi.sort((a, b) => {
         const beginA = a.broadcast ? moment(a.broadcast.split('/')[1]) : moment(a.begin);
         const beginB = b.broadcast ? moment(b.broadcast.split('/')[1]) : moment(b.begin);
-        return beginA.format('HH:mm') > beginB.format('HH:mm') ? 1 : -1;
+        if (config.basic.thirtyHourSystem) {
+            let strA = (beginA.hour() < 6 ? (beginA.hour() + 24).toString() : beginA.hour().toString()) + beginA.format('mm');
+            let strB = (beginB.hour() < 6 ? (beginB.hour() + 24).toString() : beginB.hour().toString()) + beginB.format('mm');
+            return strA > strB ? 1 : -1;
+        }
+        return beginA.format('HHmm') > beginB.format('HHmm') ? 1 : -1;
     });
     // convert to list of string to display
     const bangumiStringList = bangumi.map((b) => {
@@ -38,12 +43,30 @@ const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config)
     // mark current time between bangumi
     let timePointer = 0;
     while (timePointer < bangumiStringList.length) {
-        if (moment(bangumi[timePointer].begin).format('HH:mm') > timeNow.format('HH:mm')) {
+        const beginTime = bangumi[timePointer].broadcast ?
+            moment(bangumi[timePointer].broadcast.split('/')[1]) :
+            moment(bangumi[timePointer].begin);
+        let strNow = "";
+        let strBgm = "";
+        if (config.basic.thirtyHourSystem) {
+            strNow = (timeNow.hour() < 6 ? (timeNow.hour() + 24).toString() : timeNow.hour().toString()) + timeNow.format('mm');
+            strBgm = (beginTime.hour() < 6 ? (beginTime.hour() + 24).toString() : beginTime.hour().toString()) + beginTime.format('mm');
+        }
+        else {
+            strNow = timeNow.format('HHmm');
+            strBgm = beginTime.format('HHmm');
+        }
+        if (strBgm > strNow) {
             break;
         }
         timePointer++;
     }
-    return timeNow.format(config.format.dayFormat.header) + '\n' +
+    return (config.basic.thirtyHourSystem ?
+        (timeNow.hour() < 6 ?
+            timeNow.clone().subtract(1, 'days') :
+            timeNow) :
+        timeNow)
+        .format(config.format.dayFormat.header) + '\n' +
         bangumiStringList.slice(0, timePointer).join('\n') + '\n' +
         timeNow.format(config.format.dayFormat.clock) + '\n' +
         bangumiStringList.slice(timePointer).join('\n');

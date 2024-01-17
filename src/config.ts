@@ -3,6 +3,7 @@ import { Schema } from "koishi"
 namespace BasicConfig {
     export interface Config {
         excludeOld: boolean;
+        thirtyHourSystem: boolean;
         showChineseTitle: boolean;
         separateWeekdays: boolean;
         maxTitleLength: number;
@@ -41,6 +42,8 @@ export interface Config {
 const basicConfig: Schema<BasicConfig.Config> = Schema.object({
     // exclude bangumi of seasons before this season
     excludeOld: Schema.boolean().default(false),
+    // use 30-hour system
+    thirtyHourSystem: Schema.boolean().default(false),
     // display Chinese title
     showChineseTitle: Schema.boolean().default(true),
     // separate season bangumi message by weekdays

@@ -49,7 +49,39 @@ export function apply(ctx: Context, config: Config) {
 
             // get bangumi data of today, plus offset
             const timeNow = moment().add(offset, 'days');
-            const bangumi = await getTodayBangumiData(timeNow, ctx, config);
+            let bangumi = await getTodayBangumiData(timeNow, ctx, config);
+            if (config.basic.thirtyHourSystem) {
+                // convert to 30-hour system
+                if (timeNow.hour() < 6) {
+                    bangumi = (await getTodayBangumiData(
+                        timeNow.clone().subtract(1, 'days'), ctx, config))
+                        .filter((b) => {
+                            const beginTime = b.broadcast ?
+                                moment(b.broadcast.split('/')[1]) : moment(b.begin);
+                            return beginTime.hour() >= 6;
+                        })
+                        .concat(bangumi.filter((b) => {
+                            const beginTime = b.broadcast ?
+                                moment(b.broadcast.split('/')[1]) : moment(b.begin);
+                            return beginTime.hour() < 6;
+                        }));
+                }
+                else {
+                    bangumi = bangumi
+                        .filter((b) => {
+                            const beginTime = b.broadcast ?
+                                moment(b.broadcast.split('/')[1]) : moment(b.begin);
+                            return beginTime.hour() >= 6;
+                        })
+                        .concat((await getTodayBangumiData(
+                            timeNow.clone().add(1, 'days'), ctx, config))
+                            .filter((b) => {
+                                const beginTime = b.broadcast ?
+                                    moment(b.broadcast.split('/')[1]) : moment(b.begin);
+                                return beginTime.hour() < 6;
+                            }));
+                }
+            }
             // convert to string to display
             const bangumiString = makeDayMessage(timeNow, bangumi, config);
             session.sendQueued(bangumiString);
@@ -187,7 +219,7 @@ export function apply(ctx: Context, config: Config) {
                 return Promise.reject();
             }).then(() => {
                 session.sendQueued(session.text('.updated'));
-            }, () => {});
+            }, () => { });
         });
 
     // clear bangumi database
@@ -204,6 +236,6 @@ export function apply(ctx: Context, config: Config) {
                 return Promise.reject();
             }).then(() => {
                 session.sendQueued(session.text('.dropped'));
-            }, () => {});
+            }, () => { });
         });
 }

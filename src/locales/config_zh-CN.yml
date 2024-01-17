@@ -1,5 +1,6 @@
 basic:
-  excludeOld: 排除旧番
+  excludeOld: 排除旧番（bangumi-data）
+  thirtyHourSystem: 使用 30 小时制（bangumi-data）
   showChineseTitle: 优先显示中文标题
   separateWeekdays: 按星期分割季度动画消息，避免消息过长无法发送（也可考虑插件“imagify”）
   maxTitleLength: 标题最大长度，0 为不限制
