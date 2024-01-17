@@ -51,8 +51,18 @@ const getSeasonBangumiData = async (timeNow: moment.Moment, ctx: Context, config
                 {
                     $or: [
                         { end: { $gte: season.format("YYYY-MM-DD") } },
-                        { end: "" },
-                        { end: undefined }
+                        {
+                            $and: [
+                                { end: "" },
+                                { type: { $in: ["tv", "web"] } }
+                            ]
+                        },
+                        {
+                            $and: [
+                                { end: undefined },
+                                { type: { $in: ["tv", "web"] } }
+                            ]
+                        }
                     ]
                 },
                 { begin: { $lte: season.add(3, "months").format("YYYY-MM-DD") } }
