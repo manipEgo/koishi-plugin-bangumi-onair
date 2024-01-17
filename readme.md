@@ -361,12 +361,12 @@ Will try to drop the database. Not called under normal condition.
    - [x] 参数：日期偏移 -> `.day [offset: number]` | `.cday [offset: number]`
  - [x] 功能：更新动画数据 -> `.update`
  - [x] 功能：清除动画数据 -> `.drop`
- - [x] 设置：排除 `bangumi-data` 非本季度开播动画 -> `excludeOld`
+ - [x] 设置：排除 *bangumi-data* 非本季度开播动画 -> `excludeOld`
  - [x] 设置：显示中文标题 -> `showChineseTitle`
  - [x] 设置：限制标题长度 -> `maxTitleLength`
  - [x] 设置：自定义格式化输出 -> `formatConfig`
  - [x] 设置：按星期分割显示季度动画，避免消息过长 -> `separateWeekdays`
- - [x] 设置：使用三十小时制组织 `bangumi-data` 动画 -> `thirtyHourSystem`
+ - [x] 设置：使用三十小时制组织 *bangumi-data* 动画 -> `thirtyHourSystem`
  - [x] 基础：使用数据库减少请求
  - [x] 基础：使用 *bangumi-data* 获取数据
  - [x] 基础：使用 *bangumi-API-Calendar* 获取数据
