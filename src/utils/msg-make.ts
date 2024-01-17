@@ -16,11 +16,14 @@ const truncateLine = (message: string, maxLength: number): string => {
 const makeDayMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config): string => {
     // sort by begin time
     bangumi.sort((a, b) => {
-        return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
+        const beginA = a.broadcast ? moment(a.broadcast.split('/')[1]) : moment(a.begin);
+        const beginB = b.broadcast ? moment(b.broadcast.split('/')[1]) : moment(b.begin);
+        return beginA.format('HH:mm') > beginB.format('HH:mm') ? 1 : -1;
     });
     // convert to list of string to display
     const bangumiStringList = bangumi.map((b) => {
-        const prefix = moment(b.begin).format(config.format.dayFormat.prefix);
+        const beginB = b.broadcast ? moment(b.broadcast.split('/')[1]) : moment(b.begin);
+        const prefix = beginB.format(config.format.dayFormat.prefix);
         // display Chinese title
         if (config.basic.showChineseTitle) {
             return prefix +
@@ -59,17 +62,20 @@ const makeCdayMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], config
 const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Config): string[] => {
     // sort by isoWeekday -> begin time -> dayOfYear
     bangumi.sort((a, b) => {
-        if (moment(a.begin).isoWeekday() === moment(b.begin).isoWeekday()) {
-            if (moment(a.begin).format('HH:mm') === moment(b.begin).format('HH:mm')) {
-                return moment(a.begin).dayOfYear() > moment(b.begin).dayOfYear() ? 1 : -1;
+        const beginA = a.broadcast ? moment(a.broadcast.split('/')[1]) : moment(a.begin);
+        const beginB = b.broadcast ? moment(b.broadcast.split('/')[1]) : moment(b.begin);
+        if (beginA.isoWeekday() === beginB.isoWeekday()) {
+            if (beginA.format('HH:mm') === beginB.format('HH:mm')) {
+                return beginA.dayOfYear() > beginB.dayOfYear() ? 1 : -1;
             }
-            return moment(a.begin).format('HH:mm') > moment(b.begin).format('HH:mm') ? 1 : -1;
+            return beginA.format('HH:mm') > beginB.format('HH:mm') ? 1 : -1;
         }
-        return moment(a.begin).isoWeekday() > moment(b.begin).isoWeekday() ? 1 : -1;
+        return beginA.isoWeekday() > beginB.isoWeekday() ? 1 : -1;
     });
     // convert to list of string to display
     const bangumiStringList = bangumi.map((b) => {
-        const prefix = moment(b.begin).format(config.format.seasonFormat.prefix);
+        const beginB = b.broadcast ? moment(b.broadcast.split('/')[1]) : moment(b.begin);
+        const prefix = beginB.format(config.format.seasonFormat.prefix);
         // display Chinese title
         if (config.basic.showChineseTitle) {
             return prefix +
@@ -86,7 +92,10 @@ const makeSeasonMessage = (timeNow: moment.Moment, bangumi: Item[], config: Conf
     let weekday = 1;
     while (weekday < 7) {
         while (weekdayPointer[weekday] < bangumiStringList.length) {
-            if (moment(bangumi[weekdayPointer[weekday]].begin).isoWeekday() > weekday) {
+            const beginTime = bangumi[weekdayPointer[weekday]].broadcast ?
+                moment(bangumi[weekdayPointer[weekday]].broadcast.split('/')[1]) :
+                moment(bangumi[weekdayPointer[weekday]].begin);
+            if (beginTime.isoWeekday() > weekday) {
                 break;
             }
             weekdayPointer[weekday]++;
