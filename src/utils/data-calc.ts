@@ -75,10 +75,15 @@ const checkPeriodHitDay = (timeNow: moment.Moment, begin: moment.Moment, period:
         return timeNow.dayOfYear() === begin.dayOfYear();
     }
     const happen = begin.clone();
-    while (happen.dayOfYear() < timeNow.dayOfYear() && happen.dayOfYear() >= begin.dayOfYear()) {
-        happen.add(period);
+    // periods other than 1 week, check the period
+    if (period.asDays() !== 7) {
+        while (happen.dayOfYear() < timeNow.dayOfYear() && happen.dayOfYear() >= begin.dayOfYear()) {
+            happen.add(period);
+        }
+        return timeNow.dayOfYear() === happen.dayOfYear();
     }
-    return timeNow.dayOfYear() === happen.dayOfYear();
+    // period of 1 week, check the weekday
+    return timeNow.isoWeekday() === happen.isoWeekday();
 }
 
 
@@ -98,10 +103,12 @@ const getTodayBangumiData = async (timeNow: moment.Moment, ctx: Context, config:
                 return false;
             }
         }
-        const begin = moment(b.begin);
         // use bangumi-data broadcast for period if exist
         // https://github.com/bangumi-data/bangumi-data/blob/master/CONTRIBUTING.md#%E5%85%B3%E4%BA%8Ebroadcast%E5%AD%97%E6%AE%B5
         const broadcast = b.broadcast;
+        // use broadcast begin time if exists
+        const begin = broadcast ?
+            moment(broadcast.split('/')[1]) : moment(b.begin);
         // default period for tv and web is 1 week
         // default period for others is 0 day
         const period = broadcast ?
