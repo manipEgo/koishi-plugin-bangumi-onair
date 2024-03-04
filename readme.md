@@ -372,12 +372,12 @@ Will try to drop the database. Not called under normal condition.
  - [x] 基础：使用 *bangumi-API-Calendar* 获取数据
  - [x] 语言：中文设置和提示
  - [ ] **功能：查询指定时间戳**
- - [ ] 功能：订阅动画
- - [ ] 功能：仅显示订阅
- - [ ] 功能：订阅开播提醒
  - [ ] 功能：参数覆写设置
- - [ ] 功能：以图片展示
  - [ ] 文档：格式化输出使用方法
+
+## Not planned / 计划外
+ - 功能：以图片展示 -> 建议使用 `imagify` 插件
+ - 功能：订阅动画、仅显示订阅、订阅开播提醒 -> 计划另行开发 `rss` 插件实现
 
 ## Credits / 鸣谢
  - [Koishi](https://koishi.chat/)
