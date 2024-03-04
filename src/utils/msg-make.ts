@@ -180,7 +180,7 @@ const makeCseasonMessage = (timeNow: moment.Moment, bangumi: BangumiOnair[], con
     let weekday = 1;
     while (weekday < 7) {
         while (weekdayPointer[weekday] < bangumiStringList.length) {
-            if (moment(bangumi[weekdayPointer[weekday]].air_date).isoWeekday() > weekday) {
+            if (bangumi[weekdayPointer[weekday]].air_weekday > weekday) {
                 break;
             }
             weekdayPointer[weekday]++;
