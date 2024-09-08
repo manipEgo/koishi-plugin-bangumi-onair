@@ -5,6 +5,10 @@ basic:
   separateWeekdays: separate onair.season message by weekdays, to avoid long message constraint (plugin "imagify" could also help)
   maxTitleLength: max title length, 0 for no limit
 
+network:
+  $description: network settings
+  cdnUrls: bangumi-data CDN urls
+
 format:
   $description: format settings
   dayFormat:

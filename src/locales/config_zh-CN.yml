@@ -5,6 +5,10 @@ basic:
   separateWeekdays: 按星期分割季度动画消息，避免消息过长无法发送（也可考虑插件“imagify”）
   maxTitleLength: 标题最大长度，0 为不限制
 
+network:
+  $description: 网络设置
+  cdnUrls: bangumi-data CDN 链接
+
 format:
   $description: 格式设置
   dayFormat:
