@@ -184,7 +184,7 @@ export function apply(ctx: Context, config: Config) {
             await Promise.allSettled([
                 // get bangumi data from CDN
                 new Promise<void>(async (resolve, reject) => {
-                    const bangumiData = await getCDNData(ctx, session);
+                    const bangumiData = await getCDNData(ctx, session, config);
                     // sort by begin time -> title
                     bangumiData.items.sort((a, b) => {
                         if (a.begin === b.begin) {

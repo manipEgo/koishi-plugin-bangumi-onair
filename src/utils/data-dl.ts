@@ -1,4 +1,5 @@
 import { version, homepage } from "../../package.json";
+import { Config } from '..';
 
 const developer = "manipEgo";
 const appName = "koishi-plugin-bangumi-onair";
@@ -9,22 +10,26 @@ const calendarAPI = "https://api.bgm.tv/calendar";
 const userAgent = `${developer}/${appName}/${version} (${homepage})`;
 
 
-const getCDNData = async (ctx, session): Promise<RawJson> => {
+const getCDNData = async (ctx, session, config: Config): Promise<RawJson> => {
     // get bangumi data from CDN
-    try {
-        const cdnData = await ctx.http.get(CdnUrl, {
-            headers: {
-                "User-Agent": userAgent
-            }
-        });
-        return await cdnData as RawJson;
+    for (const url of config.network.cdnUrls) {
+        try {
+            const cdnData = await ctx.http.get(url, {
+                headers: {
+                    "User-Agent": userAgent
+                }
+            });
+            return await cdnData as RawJson;
+        } catch (error) {
+            console.error(`Failed to fetch from ${url}:`, error);
+            // try next URL
+        }
     }
-    catch (error) {
-        console.error(error);
-        // TODO: localization
-        session.sendQueued(session.text(".cdnFailed"));
-        return;
-    }
+
+    // all URLs failed
+    console.error("All CDN URLs failed.");
+    session.sendQueued(session.text(".cdnFailed"));
+    return;
 }
 
 const getCalendarData = async (ctx, session): Promise<BangumiOnair[]> => {

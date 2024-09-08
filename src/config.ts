@@ -10,6 +10,12 @@ namespace BasicConfig {
     }
 }
 
+namespace NetworkConfig {
+    export interface Config {
+        cdnUrls: Array<string>;
+    }
+}
+
 namespace FormatConfig {
     export interface Config {
         dayFormat: {
@@ -36,6 +42,7 @@ namespace FormatConfig {
 
 export interface Config {
     basic: BasicConfig.Config;
+    network: NetworkConfig.Config;
     format: FormatConfig.Config;
 }
 
@@ -51,6 +58,15 @@ const basicConfig: Schema<BasicConfig.Config> = Schema.object({
     // max length of title
     maxTitleLength: Schema.number().default(0),
 });
+
+const networkConfig: Schema<NetworkConfig.Config> = Schema.object({
+    // custom CDN urls
+    cdnUrls: Schema.array(Schema.string()).default([
+        "https://unpkg.com/bangumi-data@0.3.150/dist/data.json",
+        "https://cdn.jsdelivr.net/npm/bangumi-data/dist/data.json",
+        "https://cdn.jsdmirror.com/npm/bangumi-data/dist/data.json"
+    ])
+})
 
 const formatConfig: Schema<FormatConfig.Config> = Schema.object({
     dayFormat: Schema.object({
@@ -76,6 +92,7 @@ const formatConfig: Schema<FormatConfig.Config> = Schema.object({
 
 export const Config: Schema<Config> = Schema.object({
     basic: basicConfig,
+    network: networkConfig,
     format: formatConfig,
 }).i18n({
     "en-US": require("./locales/config_en-US"),
