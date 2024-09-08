@@ -367,6 +367,7 @@ Will try to drop the database. Not called under normal condition.
  - [x] 设置：自定义格式化输出 -> `formatConfig`
  - [x] 设置：按星期分割显示季度动画，避免消息过长 -> `separateWeekdays`
  - [x] 设置：使用三十小时制组织 *bangumi-data* 动画 -> `thirtyHourSystem`
+ - [x] 设置：自定义获取 *bangumi-data* 的 CDN -> `cdnUrls`
  - [x] 基础：使用数据库减少请求
  - [x] 基础：使用 *bangumi-data* 获取数据
  - [x] 基础：使用 *bangumi-API-Calendar* 获取数据
