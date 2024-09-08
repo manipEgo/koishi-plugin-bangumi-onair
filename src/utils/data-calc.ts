@@ -54,13 +54,23 @@ const getSeasonBangumiData = async (timeNow: moment.Moment, ctx: Context, config
                         {
                             $and: [
                                 { end: "" },
-                                { type: { $in: ["tv", "web"] } }
+                                {
+                                    $or: [
+                                        {type: "tv"},
+                                        {type: "web"}
+                                    ]
+                                }
                             ]
                         },
                         {
                             $and: [
                                 { end: undefined },
-                                { type: { $in: ["tv", "web"] } }
+                                {
+                                    $or: [
+                                        { type: "tv" },
+                                        { type: "web" }
+                                    ]
+                                }
                             ]
                         }
                     ]
